@@ -1,0 +1,26 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { AUTHOR_NAME, CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Editorial policy of ${SITE_NAMES[lang]}: data, limits, fixes`} description="Which DVSA files and GOV.UK pages MOT Failure Rates uses, which sources it refuses, how small samples are handled, when data is re-read and how errors are corrected." lang={lang} noindex={true} breadcrumbs={[{ label: 'Editorial policy' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Editorial and corrections policy</h1>
+    <p>Drivers use these pages to decide whether to book an MOT early, to check a car before buying it or to budget for repairs. A wrong rate could mislead them, so every figure points back to the file or the page it came from.</p>
+    <h2>Who is responsible</h2><p>{AUTHOR_NAME}, reachable at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+    <h2>The data we use</h2>
+    <ul>
+      <li>the DfT and DVSA files "Anonymised MOT tests and results" (test results and failure items), under the Open Government Licence v3.0;</li>
+      <li>the DVSA tables "MOT testing data for Great Britain" for national rates by quarter and the number of test stations;</li>
+      <li>GOV.UK pages for fees, due dates, retests, appeals and the historic vehicle exemption;</li>
+      <li>the DVSA MOT inspection manual for what each defect group covers.</li>
+    </ul>
+    <h2>Sources we refuse</h2><p>History-check sites, garages, insurers and warranty sellers never provide a figure here. A repair price or a "typical cost" we cannot trace to an official source is not published.</p>
+    <h2>Small samples</h2><p>A rate is shown only when it rests on at least 300 tests on content pages, 100 in the checker, which says how many tests it counts. Rates describe cars as a group and are labelled that way next to every result.</p>
+    <h2>Review cycle</h2><p>DVSA publishes a new year of anonymised results irregularly (the 2023 file was published on 29 February 2024) and its national tables every three months. The pages are rebuilt and re-dated when either changes.</p>
+    <h2>Corrections</h2>
+    <ol><li>We open the official file or page again.</li><li>We correct the script or the parameter file and add a test for the case.</li><li>The pages rebuild and show the new date.</li></ol>
+    <h2>Independence</h2><p>No garage, insurer, history-check company or carmaker pays for or reviews what is published here, and the site carries no affiliate link. Version: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

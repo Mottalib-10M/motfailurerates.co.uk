@@ -1,0 +1,114 @@
+---
+/**
+ * Home (pillar page): the make, model and year checker on the first screen, then what the DVSA test-by-test
+ * file says about MOT failures in Great Britain (RECETTE §5, §21). Every figure is read from the data.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Tool from './Tool.astro';
+import Clamp from './Clamp.astro';
+import { route } from '../i18n/routes';
+import { PAGES } from '../lib/guides';
+import { groupLabel, GROUPS_ORDER } from '../i18n/nav';
+import { helpers } from '../lib/helpers';
+import { LAST_UPDATED, AUTHOR_NAME } from '../data/site-config';
+import { displayDate } from '../lib/format';
+import { faqSchema, webApplicationSchema, websiteSchema, organizationSchema } from '../lib/seo';
+const lang = 'en';
+const h = helpers(true);
+const { E, P, TY, gb, pc, num, ratio, m2, m0 } = h;
+const focus = h.M('FORD', 'FOCUS');
+const f15 = focus.byAge.find((r) => r.year === 2015)!;
+const r3 = E.nationalAt(3)!, r10 = E.nationalAt(10)!, r18 = E.nationalAt(18)!;
+const big = E.D.models.filter((m) => m.n >= 50000).map((m) => ({ m, r: E.ageAdjusted(m)! })).sort((a, b) => a.r - b.r);
+const top20 = [...E.D.models].sort((a, b) => b.n - a.n).filter((m) => m.n >= 250000).slice(0, 20);
+const cats = P.categories.rows;
+const top20Rows = top20.map((m) => [h.ml(m), m.n, pc(m.f / m.n), ratio(E.ageAdjusted(m))]);
+const gbRate = gb.fails / gb.tests;
+const resume = `${pc(gb.fails / gb.tests)} of the ${num(gb.tests)} first MOT tests of cars and light vans in Great Britain failed in ${TY}, according to the anonymised test results DVSA publishes one line per test. Behind that average, a car at its first MOT, three years old, failed ${pc(r3)} of the time, a ten-year-old car ${pc(r10)} and an eighteen-year-old car ${pc(r18)}. The make and model add or take away several points at the same age: among the ${big.length} models with at least 50,000 tests, the best failed ${pc(1 - big[0].r, 0)} less often than an average car of the same age and the worst ${pc(big[big.length - 1].r - 1, 0)} more often. DVSA's latest quarterly table puts the national rate at ${pc(P.national.q1InitialFailRate)} for ${P.national.q1Label}. Choose a make, a model and a year above for your own car's figure.`;
+const faqs = [
+  { q: 'What percentage of cars fail their MOT?', a: `${pc(P.national.initialFailRate)} of cars, vans and passenger vehicles up to 12 seats failed at the first attempt in ${P.national.yearLabel}, according to DVSA, and ${pc(P.national.finalFailRate)} once defects fixed during the test are taken out. In the ${TY} test-by-test file, the rate runs from ${pc(r3)} at three years to over 40% for cars aged 15 to 19.` },
+  { q: 'Will my car pass its MOT?', a: 'Nobody can say before a tester has inspected it. What this site gives is the share of cars of your make, model and year that failed in the DVSA results, and the parts that failed them most, so you know what to check before the test.' },
+  { q: 'Do I need to give my number plate?', a: 'No. The checker works from the make, model and year you choose, and nothing leaves your browser. The MOT history of a specific car, from its number plate, is on GOV.UK only. This site never asks for one, and its rates describe cars like yours rather than your own car.' },
+  { q: 'How recent are the failure rates?', a: `The rates by model use the latest anonymised file DVSA has published, covering every test in ${TY} (published on ${displayDate(E.D.meta.published, 'en-GB')}). National rates by quarter come from the DVSA tables updated on ${displayDate(P.national.tableUpdated, 'en-GB')}. When this page was checked, the data.gov.uk dataset offered no test-by-test file later than ${TY}; the rates will move to a newer year once DVSA publishes one.` },
+  { q: 'Why is my model compared with cars of the same age?', a: 'Because age moves the failure rate more than anything else. A model sold mostly fifteen years ago will fail more than a new one whatever its quality. Comparing each year of a model with all cars of that year shows whether the model itself does better or worse.' },
+  { q: 'Is this an official DVSA site?', a: 'No. MOT Failure Rates is an independent site published by Radif Partners. It counts the results DVSA publishes under the Open Government Licence. It books no MOT, sells no history check and asks for no email or number plate. Fees, due dates and retest rules come from GOV.UK pages, linked at the foot of each page.' },
+];
+const jsonLd = [webApplicationSchema({ name: 'MOT failure rate checker', description: 'Share of cars of a make, model and year that failed their first MOT test, from the DVSA anonymised results.', path: route('home', lang), lang }), websiteSchema(lang), organizationSchema(lang), faqSchema(faqs, lang)];
+const groups = GROUPS_ORDER.filter((x) => x !== 'models').map((x) => ({ g: x, pages: PAGES.filter((p) => p.group === x) }));
+const models = PAGES.filter((p) => p.group === 'models');
+const quarters = [[P.national.y2324Label, P.national.y2324InitialFailRate], ['April 2024 to March 2025', P.national.prevInitialFailRate], [P.national.yearLabel, P.national.initialFailRate], [P.national.q1Label, P.national.q1InitialFailRate]];
+---
+<PageLayout title="MOT Failure Rate by Make, Model and Age: Will My Car Pass?" description="MOT failure rate for your make, model and year from 32 million DVSA tests, against every car of the same age, with the defects that fail it, fee and due date." lang={lang} jsonLd={jsonLd} faqs={faqs}>
+  <header class="mb-3">
+    <h1 class="text-[1.75rem] font-bold text-navy-900 max-sm:leading-tight sm:text-3xl md:text-4xl">MOT failure rate by make, model and age</h1>
+    <p class="mt-2 text-base text-navy-700 sm:text-lg">{pc(gbRate)} of cars failed their first MOT test in {TY}. Choose yours: the share of the same make, model and year that failed, against every car of that age.</p>
+  </header>
+  <div data-outil class="mb-4"><Tool tool={{ kind: 'checker', props: { make: 'Ford', model: 'Focus', year: 2015 } }} primary={true} /></div>
+  <Clamp text={resume} id="clamp-home" class="mb-3" />
+  <p class="mb-8 text-sm text-navy-600">DVSA anonymised MOT results ({TY} tests, published {displayDate(E.D.meta.published, 'en-GB')}) and DVSA quarterly tables, read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time> · {AUTHOR_NAME} · <a href={route('method', lang)} class="underline hover:text-navy-900">How the rates are counted</a> · <a href={route('about', lang)} class="underline hover:text-navy-900">About this site</a></p>
+
+  <div class="prose prose-slate max-w-none">
+    <p>The MOT failure rate on this page is the share of first tests that failed, for each make, model and year of first registration, counted from the anonymised file in which DVSA publishes every MOT test of the year: the Ford Focus first registered in 2015, for example, failed {pc(f15.r)} of its {num(f15.n)} tests in {TY}, against {pc(f15.nat)} for every car registered that year.</p>
+
+    <h2>How the MOT failure rate by make, model and age is counted</h2>
+    <p>You choose a make, a model and the year the car was first registered, the date shown on the V5C logbook. The checker looks up every first MOT test taken in {TY} by a car of that make, model and year in Great Britain, and gives three things: the share that failed, the number of tests behind it, and the failure rate of all cars registered the same year. The table under the result shows the same model for each registration year, so you can see where your car sits on its own curve.</p>
+    <p>A failure here means the car failed the test as it was presented, including when the tester fixed a small defect during the test, such as a bulb. That is DVSA's "initial fail rate", the figure it publishes every quarter. Retests are not counted, so a car that failed and passed a week later appears once, as a failure. Abandoned and aborted tests are left out.</p>
+    <p>Below the rate, the checker names the three defect groups that appear most often on failed tests of that model, all ages together: lamps and electrical equipment, suspension, tyres, brakes, visibility and the others defined in the DVSA inspection manual. These are the parts to look at before the test. Rates rest on at least 100 tests in the checker and 300 on the content pages; a year with fewer tests is not offered.</p>
+
+    <h2>Why the test-by-test file changes everything</h2>
+    <p>The figures DVSA publishes on GOV.UK stop at the class of vehicle: cars and light vans together, quarter by quarter. Sites that answer "check MOT" ask for a number plate and show one car's history, often with a report or a subscription to sell. The public tables that once gave failure rates by model and age are gone. None of them answers the question most drivers have before booking: how do cars like mine usually do?</p>
+    <p>The answer exists, in a file few people open. Each year the Department for Transport and DVSA publish every MOT test as one anonymised line: date, class, result, mileage, postcode area, make, model, fuel and date of first use, plus a second file listing every defect recorded. For {TY} that is {num(E.D.meta.allTests)} first tests of cars and light vans and more than 22 million failure items. Counting them by make, model and year gives the rate for any popular car, and joining the defects gives the reasons. That is what this site does, under the Open Government Licence, without a number plate and without asking for anything.</p>
+    <p>The limit is the date: the {TY} file is the most recent DVSA has published, so the rates by model describe tests taken in {TY}. Rates move slowly from one year to the next for a given model and age, and the national figure has changed by less than a point a year since: {pc(P.national.y2324InitialFailRate)} in 2023-24, {pc(P.national.initialFailRate)} in 2025-26.</p>
+  </div>
+
+  <Fragment set:html={h.table(['Period', 'Initial fail rate, classes 3 and 4'], quarters.map((q) => [String(q[0]), pc(Number(q[1]))]), 'DVSA table DVSA/MOT/01: cars, vans and passenger vehicles up to 12 seats, initial tests.', ['l', 'r'])} />
+
+  <div class="prose prose-slate max-w-none">
+    <h2>Age is the first factor</h2>
+    <p>Nothing moves the failure rate as much as the age of the car. Three years after registration, at the first MOT, {pc(r3)} of cars failed in {TY}. At ten years, {pc(r10)}. The curve keeps climbing until cars reach 15 to 19 years, where more than four in ten fail, then falls slowly: the old cars still on the road are often the ones their owners look after. The <Fragment set:html={h.a('mot-failure-rate-by-age', 'page on age')} /> gives every year.</p>
+    <p>That is why a model's raw rate can mislead. A model sold mostly fifteen years ago fails more than one launched five years ago, whatever its build. Each model page and the <Fragment set:html={h.a('cars-least-likely-to-fail-mot', 'ranking of models')} /> therefore compare a model with all cars of the same registration years. The ratio that results is 1 for a model on the national line, below 1 for one that failed less often.</p>
+  </div>
+
+  <Fragment set:html={h.table(['Model', 'Tests in ' + TY, 'Failed', 'Ratio at equal age'], top20Rows, `The 20 most tested models, first MOT tests of ${TY}. Ratio below 1: fewer failures than cars of the same age. DVSA anonymised results.`, ['l', 'r', 'r', 'r'])} />
+
+  <div class="prose prose-slate max-w-none">
+    <h2>What fails cars at the MOT</h2>
+    <p>DVSA's quarterly tables count the share of tests failed on each part of the car. In {P.national.yearLabel}, lamps, reflectors and electrical equipment failed {pc(Number(cats[0][1]))} of tests, suspension {pc(Number(cats[1][1]))}, tyres {pc(Number(cats[2][1]))} and brakes {pc(Number(cats[3][1]))}. A failed test carries {num(P.categories.defectsPerFailure, 2)} defects on average. In the {TY} file, the single defect recorded most often was a tyre tread below 1.6 mm, followed by a lamp that does not work and a broken coil spring. The <Fragment set:html={h.a('most-common-mot-failures', 'most common failures page')} /> ranks the top twenty and shows how they change with age, and the <Fragment set:html={h.a('what-is-checked-in-an-mot', 'checklist page')} /> what the tester looks at in each part of the car.</p>
+    <p>Models differ in what fails them. Small hatchbacks fail most on lamps; the Renault Clio and the Fiat 500 on suspension; the Kia Sportage on brakes; the BMW 3 Series has tyres in second place. Each model page lists its own defect groups against the national pattern.</p>
+
+    <h2>Fuel, mileage and region</h2>
+    <p>At the same age, diesel cars failed more often than petrol cars in {TY}, and hybrids least: at five years, {pc(E.fuelRate('DI', 5))} for diesels, {pc(E.fuelRate('PE', 5))} for petrol and {pc(E.fuelRate('HY', 5))} for hybrids (<Fragment set:html={h.a('mot-failure-rate-by-fuel', 'fuel page')} />). Mileage raises the rate up to about 80,000 miles, then barely moves (<Fragment set:html={h.a('mot-failure-rate-by-mileage', 'mileage page')} />). Where the car is tested matters too: for cars aged six to nine, rates ran from {pc(E.areaRate('TW', '6-9'))} in the Twickenham postcode area to {pc(E.areaRate('DD', '6-9'))} in Dundee (<Fragment set:html={h.a('mot-failure-rate-by-postcode-area', 'postcode area page')} />).</p>
+
+    <h2>Cost, due date and retests</h2>
+    <p>The MOT fee for a car is capped at {m2(P.fees.car)}, with no VAT, and many garages charge less (<Fragment set:html={h.src('gov_fees', 'GOV.UK fees')} />). The first MOT is due by the third anniversary of registration, then every year, and you can be tested up to a month (minus a day) early without losing the renewal date (<Fragment set:html={h.src('gov_when', 'GOV.UK, when to get an MOT')} />). Driving without a valid MOT can cost up to {m0(P.rules.fineNoMot)}. After a fail, the retest is free if the car is repaired at the test centre and retested within {num(P.rules.partialRetestDays)} working days, or brought back by the end of the next working day for listed items (<Fragment set:html={h.src('gov_retests', 'GOV.UK retests')} />). The <Fragment set:html={h.a('mot-cost', 'cost calculator')} />, the <Fragment set:html={h.a('mot-due-date', 'due date calculator')} /> and the <Fragment set:html={h.a('failed-mot-what-next', 'page on failing')} /> go into each rule. Cars built or first registered more than {num(P.rules.historicYears)} years ago need no MOT (<Fragment set:html={h.a('mot-exemption-40-year-old-cars', 'exemption page')} />).</p>
+
+    <h2>Before the test: seven checks that cost nothing</h2>
+    <ol>
+      <li>Walk round the car with every light on, brake lights and the number plate lamp included.</li>
+      <li>Measure the tyre tread across the central three quarters of each tyre: 1.6 mm is the minimum.</li>
+      <li>Look at both sidewalls for cuts, bulges and cords showing.</li>
+      <li>Top up the screen wash and replace wiper blades that smear.</li>
+      <li>Check that no warning lamp stays lit once the engine runs, the engine management lamp above all.</li>
+      <li>Pull every seat belt out fully and check that it latches.</li>
+      <li>Make sure the number plates are clean, legible and correctly spaced.</li>
+    </ol>
+    <p>These cover several of the defects DVSA records most often. They will not reveal a broken spring or a corroded brake pipe, which only a tester with the car on a lift sees, but they remove the failures that are cheapest to avoid.</p>
+
+    <h2>What a failure rate does not tell you</h2>
+    <p>A rate describes cars of a make, model and age as a group. Your own car's result depends on its condition on the day, its servicing and how it has been driven, none of which is in the data. A low rate is no guarantee of a pass and a high one is no sentence. Use it to know what to check and how much margin to leave before the old certificate runs out. For the history of a specific car, from its number plate, use the <Fragment set:html={h.src('gov_history', 'GOV.UK MOT history service')} />. The data behind this page is the <Fragment set:html={h.src('dvsa_anon', 'anonymised MOT tests and results')} /> and the <Fragment set:html={h.src('dvsa_stats', 'DVSA MOT testing data')} />, both from DVSA.</p>
+  </div>
+
+  <section class="mt-12" aria-labelledby="guides-title">
+    <h2 id="guides-title" class="text-2xl font-bold text-navy-900">Guides and makes</h2>
+    <div class="mt-4 grid gap-x-10 gap-y-6 md:grid-cols-3">
+      {groups.map(({ g, pages }) => (
+        <div>
+          <h3 class="border-b border-navy-200 pb-1 text-sm font-semibold uppercase tracking-wide text-navy-600">{groupLabel(g)}</h3>
+          <ul class="mt-2 space-y-2">{pages.map((p) => <li><a href={route(p.id, lang)} class="font-medium text-accent-700 underline-offset-2 hover:underline">{p.nav}</a><span class="block text-sm text-navy-600">{p.card}</span></li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <h3 class="mt-8 border-b border-navy-200 pb-1 text-sm font-semibold uppercase tracking-wide text-navy-600">Models with their own page</h3>
+    <p class="mt-2 text-sm leading-7">{models.map((p, i) => <Fragment><a href={route(p.id, lang)} class="text-accent-700 hover:underline">{p.nav}</a>{i < models.length - 1 ? ' · ' : ''}</Fragment>)}</p>
+  </section>
+</PageLayout>

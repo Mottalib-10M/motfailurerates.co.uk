@@ -1,0 +1,20 @@
+Données de motfailurerates.co.uk — comment les refaire (2026-11-13)
+
+Source : DfT/DVSA « Anonymised MOT tests and results », OGL v3.0
+  https://data.dft.gov.uk/anonymised-mot-test/test_data/dft_test_result_2023.zip  (1,19 Go, Deflate64 : lire avec `unzip -p`, pas bsdtar)
+  https://data.dft.gov.uk/anonymised-mot-test/test_data/dft_test_item_2023.zip    (460 Mo)
+  https://data.dft.gov.uk/anonymised-mot-test/lookup.zip
+Les fichiers bruts ne sont pas gardés (disque) ; raw/ contient les agrégats qu'ils produisent.
+
+Passe 1 (raw/agg.txt + failed.txt) : make|fuel|model|âge révolu|tests|F|PRS|somme km
+  unzip -p dft_test_result_2023.zip | LC_ALL=C awk -F'|' 'NR>1 && $4=="4" && $5=="NT" && $6!="ABA" && $6!="ABR" && $6!="ABRVE" && $6!="R" {
+   fu=$14; if(fu=="") next; ty=substr($3,1,4)+0; fy=substr(fu,1,4)+0; age=ty-fy; if(substr($3,6,5)<substr(fu,6,5)) age--; if(age<0||age>60) next;
+   k=$9"|"$12"|"$10"|"age; n[k]++; if($6=="F"){f[k]++; print $1"|"$9"|"$10"|"age > "failed.txt"} else if($6=="PRS"){p[k]++; print $1"|"$9"|"$10"|"age > "failed.txt"}
+   m[k]+=$7 } END{for(k in n) print k"|"n[k]"|"f[k]+0"|"p[k]+0"|"m[k] > "agg.txt"}'
+Passe 2 (raw/agg2.txt) : M|make|model|fuel|année 1re immat.|tests|échecs|somme km ; B|tranche 10k miles|âge par année|tests|échecs ; R|zone postale|âge|tests|échecs
+  unzip -p dft_test_result_2023.zip | LC_ALL=C awk -F'|' 'NR>1 && $4=="4" && $5=="NT" && ($6=="P"||$6=="F"||$6=="PRS") {
+   fu=$14; if(fu=="") next; fy=substr(fu,1,4)+0; ry=2023-fy; if(ry<0||ry>60) next; fl=($6!="P");
+   k=$9"|"$10"|"$12"|"fy; n[k]++; f[k]+=fl; m[k]+=$7; mb=int($7/10000); if(mb>30) mb=30; kb=mb"|"ry; nb[kb]++; fb[kb]+=fl; kr=$8"|"ry; nr[kr]++; fr[kr]+=fl
+  } END{for(k in n) print "M|"k"|"n[k]"|"f[k]"|"m[k] > "agg2.txt"; for(k in nb) print "B|"k"|"nb[k]"|"fb[k] > "agg2.txt"; for(k in nr) print "R|"k"|"nr[k]"|"fr[k] > "agg2.txt"}'
+Passe 3 (raw/items-agg.json) : python3 join-items.py (chemins S en tête du script ; failed.txt de la passe 1 + dft_test_item_2023.zip + lookup/)
+Puis : python3 data/build-mot.py data/raw   → src/data/mot.json et src/data/mot-lite.json

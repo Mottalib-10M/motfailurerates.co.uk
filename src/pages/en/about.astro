@@ -1,0 +1,32 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { LAST_UPDATED, AUTHOR_NAME, CONTACT_EMAIL, AUTHOR_ROLE } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+import { personSchema, organizationSchema, breadcrumbSchema, profilePageSchema } from '../../lib/seo';
+import { displayDate, formatNumber } from '../../lib/format';
+import { PAGES } from '../../lib/guides';
+import { P } from '../../lib/engine/params';
+import { D, TEST_YEAR } from '../../lib/engine/mot';
+const lang = 'en';
+const n = PAGES.length + 1;
+const nSrc = Object.keys(P.sources).length;
+---
+<PageLayout title="MOT failure rate data: who runs MOT Failure Rates and why" description="Who publishes MOT Failure Rates, why it counts the DVSA test results by make, model and age, where each figure comes from and what it never asks you for." lang={lang} jsonLd={[personSchema(lang), organizationSchema(lang), profilePageSchema({ path: route('about', lang), lang }), breadcrumbSchema([{ name: 'Home', path: route('home', lang) }, { name: 'About', path: route('about', lang) }])]} breadcrumbs={[{ label: 'About' }]}>
+  <header class="mb-6"><p class="kicker">About</p><h1 class="mt-0 text-3xl font-bold text-navy-900 md:text-4xl">Who counts the MOT results behind MOT Failure Rates</h1></header>
+  <div class="prose prose-slate max-w-none">
+    <div class="not-prose mb-6"><p class="text-lg font-semibold text-navy-900">{AUTHOR_NAME}</p><p class="text-navy-700">{AUTHOR_ROLE[lang]}</p></div>
+    <p>MOT Failure Rates is published by Radif Partners, a company that builds free tools on public data. This one is for drivers in England, Scotland and Wales who want to know, before the test, how cars like theirs usually fare, and what the MOT will cost them in fees and time.</p>
+    <h2>Why this site exists</h2>
+    <p>In November 2026, the sites that answer "check MOT" mostly ask for a number plate and then sell a history report or a monthly subscription. The one public table that once gave failure rates by model and age no longer exists, and the GOV.UK statistics stop at the vehicle class. Yet DVSA publishes every MOT test as one anonymised line, with the make, the model, the date of first use and the result.</p>
+    <p>This site counts those lines: {formatNumber(D.meta.tests, 0)} first tests of cars and light vans in {TEST_YEAR}, grouped by make, model and year of first registration, with the defect groups behind the failures. No number plate is needed and nothing you choose leaves your browser.</p>
+    <h2>Where the numbers come from</h2>
+    <p>The model rates come from the DfT and DVSA files "Anonymised MOT tests and results" for {TEST_YEAR}, published under the Open Government Licence v3.0. National rates for the latest quarters come from the DVSA tables "MOT testing data for Great Britain". Fees, due dates, retests and exemptions come from GOV.UK. The parameter file cites {nSrc} official pages, read on {displayDate(P.retrieved_at, 'en-GB')}. The <a href={route('method', lang)}>method page</a> explains every count and every limit.</p>
+    <h2>What we are not</h2>
+    <p>We are not DVSA, DVLA, GOV.UK, a garage or a test station. We cannot book an MOT, see your car's history, issue a certificate or tell you whether your own car will pass: only a tester who inspects it can. Northern Ireland, where MOTs are run by the Driver and Vehicle Agency, is not covered.</p>
+    <h2>How the site is paid for</h2>
+    <p>It is free and needs no account or email. We sell no history check, insurance, warranty or repair, take no commission and link to no garage. If advertising is added one day, it will never sit above a tool, and it cannot use what you choose because nothing leaves your browser.</p>
+    <h2>Tell us when a figure is wrong</h2>
+    <p>Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the model and the figure. The <a href={route('editorial', lang)}>editorial policy</a> explains how a correction is made. The site has {n} indexed pages, listed in the footer.</p>
+    <p class="text-sm text-navy-600">Data last read on <time datetime={LAST_UPDATED}>{displayDate(LAST_UPDATED, 'en-GB')}</time>.</p>
+  </div>
+</PageLayout>

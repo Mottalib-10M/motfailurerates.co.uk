@@ -1,0 +1,21 @@
+{
+ "name": "MOT Failure Rates",
+ "short_name": "MOT Failure Rates",
+ "description": "MOT failure rate for your make, model and age from DVSA test results, the most common reasons cars fail, the MOT fee cap, due date and retest rules.",
+ "start_url": "/en/",
+ "display": "standalone",
+ "background_color": "#ffffff",
+ "theme_color": "#0F5C4A",
+ "icons": [
+  {
+   "src": "/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

@@ -1,0 +1,112 @@
+{
+  "_about": "Every fee, date rule and national rate shown on a page is read here, never written in a page. Each value was read on the official page cited in `sources` on the date in `retrieved_at`.",
+  "year": 2026,
+  "retrieved_at": "2026-11-13",
+  "valid_from": "2026-11-13",
+  "valid_to": "2027-03-31",
+  "fees": {
+    "car": 54.85,
+    "motorcycle": 29.65,
+    "motorcycleSidecar": 37.8,
+    "class5small": 59.55,
+    "class7": 58.6,
+    "vat": false
+  },
+  "rules": {
+    "firstTestYears": 3,
+    "taxiFirstTestYears": 1,
+    "earlyWindow": "a month (minus a day)",
+    "earlyExampleExpiry": "15 May",
+    "earlyExampleEarliest": "16 April",
+    "fineNoMot": 1000,
+    "fineDangerous": 2500,
+    "pointsDangerous": 3,
+    "historicYears": 40,
+    "partialRetestDays": 10,
+    "freeRetestNextWorkingDay": true
+  },
+  "national": {
+    "_about": "DVSA table DVSA/MOT/01, classes 3 and 4 (cars, vans and passenger vehicles with up to 12 seats), initial tests only.",
+    "yearLabel": "April 2025 to March 2026",
+    "tests": 33310534,
+    "prs": 1733209,
+    "fails": 7429798,
+    "initialFailRate": 0.2751,
+    "finalFailRate": 0.223,
+    "prevYearLabel": "April 2024 to March 2025",
+    "y2324Label": "April 2023 to March 2024",
+    "y2324InitialFailRate": 0.2858,
+    "prevInitialFailRate": 0.2808,
+    "q1Label": "April to June 2026",
+    "q1InitialFailRate": 0.2675,
+    "q1FinalFailRate": 0.2172,
+    "stations": 23092,
+    "otherStations": 222,
+    "testers": 66925,
+    "stationsYear": "2025 to 2026",
+    "tableUpdated": "2026-09-10"
+  },
+  "categories": {
+    "_about": "DVSA table DVSA/MOT/03, classes 3 and 4, April 2025 to March 2026: share of initial tests with at least one failure item in the category, and share of all failure items.",
+    "rows": [
+      ["Lamps, reflectors and electrical equipment", 0.1044, 0.2489],
+      ["Suspension", 0.089, 0.2049],
+      ["Tyres", 0.0623, 0.1294],
+      ["Brakes", 0.061, 0.1518],
+      ["Visibility", 0.0428, 0.0772],
+      ["Body, chassis, structure", 0.0323, 0.0626],
+      ["Noise, emissions and leaks", 0.0308, 0.0589],
+      ["Steering", 0.0194, 0.0359],
+      ["Seat belts and supplementary restraint systems", 0.0095, 0.0164],
+      ["Road Wheels", 0.0038, 0.0076],
+      ["Identification of the vehicle", 0.0033, 0.0063]
+    ],
+    "defectsPerFailure": 2.39
+  },
+  "sources": {
+    "dvsa_anon": {
+      "url": "https://www.data.gov.uk/dataset/e3939ef8-30c7-4ca8-9c7c-ad9475cc9b2f/anonymised-mot-tests-and-results",
+      "label": { "en": "DfT and DVSA, Anonymised MOT tests and results (test results and failure items, 2023), Open Government Licence v3.0" }
+    },
+    "dvsa_stats": {
+      "url": "https://www.gov.uk/government/statistical-data-sets/mot-testing-data-for-great-britain",
+      "label": { "en": "DVSA, MOT testing data for Great Britain (tables DVSA/MOT/01 to DVSA/MOT/06)" }
+    },
+    "gov_fees": {
+      "url": "https://www.gov.uk/getting-an-mot/mot-test-fees",
+      "label": { "en": "GOV.UK, Getting an MOT: MOT costs (maximum fees by vehicle class)" }
+    },
+    "gov_when": {
+      "url": "https://www.gov.uk/getting-an-mot",
+      "label": { "en": "GOV.UK, Getting an MOT: when to get an MOT and the earliest date" }
+    },
+    "gov_retests": {
+      "url": "https://www.gov.uk/getting-an-mot/retests",
+      "label": { "en": "GOV.UK, Getting an MOT: retest after a repair" }
+    },
+    "gov_appeal": {
+      "url": "https://www.gov.uk/getting-an-mot/problems-with-your-test-result",
+      "label": { "en": "GOV.UK, Getting an MOT: test result appeals and problems" }
+    },
+    "gov_historic": {
+      "url": "https://www.gov.uk/historic-vehicles",
+      "label": { "en": "GOV.UK, Historic (classic) vehicles: MOT and vehicle tax" }
+    },
+    "gov_manual": {
+      "url": "https://www.gov.uk/guidance/mot-inspection-manual-for-private-passenger-and-light-commercial-vehicles",
+      "label": { "en": "DVSA, MOT inspection manual: cars and passenger vehicles" }
+    },
+    "gov_history": {
+      "url": "https://www.gov.uk/check-mot-history",
+      "label": { "en": "GOV.UK, Check the MOT history of a vehicle" }
+    },
+    "gov_reminder": {
+      "url": "https://www.gov.uk/mot-reminder",
+      "label": { "en": "GOV.UK, Get, view or stop MOT reminders" }
+    },
+    "ogl": {
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "label": { "en": "The National Archives, Open Government Licence v3.0" }
+    }
+  }
+}

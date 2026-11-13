@@ -1,0 +1,22 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import LegalIdentity from '../../components/LegalIdentity.astro';
+import { CONTACT_EMAIL, LAST_UPDATED, SITE_NAMES } from '../../data/site-config';
+import { route } from '../../i18n/routes';
+const lang = 'en';
+---
+<PageLayout title={`Contact ${SITE_NAMES[lang]}: a model figure, a rule, the widget`} description="Write to MOT Failure Rates when a model's MOT failure rate looks wrong, when a GOV.UK rule has changed, or to embed the MOT failure rate checker on your own website." lang={lang} noindex={true} breadcrumbs={[{ label: 'Contact' }]} showAuthor={false}>
+  <div class="prose prose-slate max-w-none">
+    <h1>Contact</h1>
+    <p>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
+    <h2>A figure looks wrong</h2>
+    <p>Tell us the make, the model, the year and the figure. Most gaps come from the way DVSA records models: the same car can appear under two names (MINI under "Mini" or "Cooper", for example). When DVSA publishes a newer year of results, the site is rebuilt from the new file and the change is dated.</p>
+    <h2>What we cannot do</h2>
+    <p>We cannot check a number plate, book or cancel an MOT, change an MOT record or contact DVSA for you. Please do not send your registration number, V5C details or address. MOT history is on GOV.UK only.</p>
+    <h2>Using the checker on your own site</h2>
+    <p>Garages, motoring clubs and car blogs can show the checker in an iframe at no cost. The code and the conditions are on the <a href={route('widget', lang)}>embed page</a>.</p>
+    <h2>Publisher</h2>
+    <LegalIdentity lang={lang} />
+    <p>Updated: {LAST_UPDATED}.</p>
+  </div>
+</PageLayout>

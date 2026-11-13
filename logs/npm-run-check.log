@@ -1,0 +1,156 @@
+verrou Playwright tenu depuis Nov 13 11:50:56 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:50:56 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:50:56 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:54:51 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:54:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:54:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:54:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:54:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 11:59:55 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:06:07 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:06:07 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:06:07 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:09:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:09:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:09:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:09:59 2026 ; j'attends…
+verrou Playwright tenu depuis Nov 13 12:13:45 2026 ; j'attends…
+
+> motfailurerates.co.uk@0.1.0 check
+> npm run build && npx vitest run && node scripts/typo-nbsp.mjs dist --check && node scripts/check-legal.mjs && python3 scripts/check-seo.py . && python3 scripts/check-unique.py . && python3 scripts/check-trame.py . && python3 scripts/check-liens.py . && node scripts/check-layout.mjs . && node scripts/check-sources.mjs . && python3 scripts/check-simulateurs.py . && python3 scripts/check-hreflang.py . && python3 scripts/check-anglais.py . && python3 scripts/check-portefeuille.py . && python3 scripts/check-cookies.py . && node scripts/check-url-propre.mjs . && node scripts/check-premier-ecran.mjs . && node scripts/check-droits.mjs . && node scripts/check-copie.mjs . && node scripts/check-nombres.mjs . && node scripts/check-contraste.mjs . && node scripts/check-saisie.mjs . && python3 scripts/check-regles.py . && python3 scripts/check-motcle.py .
+
+
+> motfailurerates.co.uk@0.1.0 build
+> astro build && node scripts/typo-nbsp.mjs && python3 scripts/check-snippets.py dist
+
+12:14:52 [types] Generated 18ms
+12:14:52 [build] output: "static"
+12:14:52 [build] mode: "static"
+12:14:52 [build] directory: /Users/mottalib/Documents/GitHub/a-publier/Mottalib-10M/motfailurerates.co.uk/dist/
+12:14:52 [build] Collecting build info...
+12:14:52 [build] ✓ Completed in 35ms.
+12:14:52 [build] Building static entrypoints...
+12:14:55 [vite] ✓ built in 2.75s
+12:14:55 [vite] ✓ built in 531ms
+12:14:55 [build] Rearranging server assets...
+
+ generating static routes 
+12:14:55   ├─ /404.html (+11ms) 
+12:14:55   ├─ /embed/mot-failure-rate-checker/index.html (+15ms) 
+12:14:56   ├─ /en/about/index.html (+5ms) 
+12:14:56   ├─ /en/contact/index.html (+5ms) 
+12:14:56   ├─ /en/cookies/index.html (+3ms) 
+12:14:56   ├─ /en/editorial-policy/index.html (+3ms) 
+12:14:56   ├─ /en/legal-notice/index.html (+3ms) 
+12:14:56   ├─ /en/method/index.html (+6ms) 
+12:14:56   ├─ /en/privacy/index.html (+6ms) 
+12:14:56   ├─ /en/widget/index.html (+3ms) 
+12:14:56   ├─ /en/mot-failure-rate-by-age/index.html (+8ms) 
+12:14:56   ├─ /en/most-common-mot-failures/index.html (+4ms) 
+12:14:56   ├─ /en/mot-failure-rate-petrol-diesel-hybrid-electric/index.html (+4ms) 
+12:14:56   ├─ /en/mot-failure-rate-by-mileage/index.html (+4ms) 
+12:14:56   ├─ /en/mot-failure-rate-by-postcode-area/index.html (+4ms) 
+12:14:56   ├─ /en/cars-least-likely-to-fail-mot/index.html (+8ms) 
+12:14:56   ├─ /en/mot-cost/index.html (+4ms) 
+12:14:56   ├─ /en/mot-due-date/index.html (+3ms) 
+12:14:56   ├─ /en/what-is-checked-in-an-mot/index.html (+3ms) 
+12:14:56   ├─ /en/failed-mot-what-next/index.html (+2ms) 
+12:14:56   ├─ /en/mot-exemption-40-year-old-cars/index.html (+2ms) 
+12:14:56   ├─ /en/ford-mot-failure-rate/index.html (+18ms) 
+12:14:56   ├─ /en/vauxhall-mot-failure-rate/index.html (+12ms) 
+12:14:56   ├─ /en/volkswagen-mot-failure-rate/index.html (+14ms) 
+12:14:56   ├─ /en/bmw-mot-failure-rate/index.html (+12ms) 
+12:14:56   ├─ /en/mercedes-benz-mot-failure-rate/index.html (+4ms) 
+12:14:56   ├─ /en/audi-mot-failure-rate/index.html (+4ms) 
+12:14:56   ├─ /en/toyota-mot-failure-rate/index.html (+4ms) 
+12:14:56   ├─ /en/nissan-mot-failure-rate/index.html (+5ms) 
+12:14:56   ├─ /en/peugeot-mot-failure-rate/index.html (+5ms) 
+12:14:56   ├─ /en/renault-mot-failure-rate/index.html (+4ms) 
+12:14:56   ├─ /en/ford-fiesta-mot-failure-rate/index.html (+8ms) 
+12:14:56   ├─ /en/ford-focus-mot-failure-rate/index.html (+8ms) 
+12:14:56   ├─ /en/vauxhall-corsa-mot-failure-rate/index.html (+8ms) 
+12:14:56   ├─ /en/volkswagen-golf-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/vauxhall-astra-mot-failure-rate/index.html (+8ms) 
+12:14:56   ├─ /en/volkswagen-polo-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/nissan-qashqai-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/toyota-yaris-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/bmw-3-series-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/audi-a3-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/mercedes-c-class-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/honda-jazz-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/renault-clio-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/fiat-500-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/honda-civic-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/nissan-juke-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/audi-a4-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/ford-kuga-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/nissan-micra-mot-failure-rate/index.html (+8ms) 
+12:14:56   ├─ /en/toyota-aygo-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/kia-sportage-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/hyundai-i10-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/skoda-fabia-mot-failure-rate/index.html (+7ms) 
+12:14:56   ├─ /en/skoda-octavia-mot-failure-rate/index.html (+6ms) 
+12:14:56   ├─ /en/index.html (+6ms) 
+12:14:56   ├─ /llms.txt (+1ms) 
+12:14:56   ├─ /index.html (+4ms) 
+12:14:56 ✓ Completed in 407ms.
+
+12:14:56 [build] ✓ Completed in 3.73s.
+12:14:56 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+12:14:56 [build] 57 page(s) built in 3.80s
+12:14:56 [build] Complete!
+typo-nbsp: 0 espace(s) rendue(s) insécable(s) dans 0 page(s)
+check-snippets : 48 pages indexables, titres 50-60, descriptions 150-160, ordre des mots et unicite conformes
+
+ RUN  v4.1.12 /Users/mottalib/Documents/GitHub/a-publier/Mottalib-10M/motfailurerates.co.uk
+
+
+ Test Files  1 passed (1)
+      Tests  37 passed (37)
+   Start at  12:14:57
+   Duration  433ms (transform 138ms, setup 0ms, import 190ms, tests 81ms, environment 0ms)
+
+typo-nbsp: 0 espace(s) à corriger dans 0 page(s)
+typo-nbsp: 0 décimale(s) avec un point dans une langue à virgule
+typo-nbsp: 0 pourcentage(s) écrit(s) mal placé(s) : « 20 % » là où la langue écrit « 20% », ou après le nombre en turc, qui écrit « %20 » (souvent dans un composant React : corriger la source)
+typo-nbsp: 0 mot(s) français sans accent ou avec un accent faux
+Identité légale complète, aucune mention provisoire.
+. : 48 pages indexables, 0 à corriger
+
+. : 48 pages comparées, 0 paire(s) trop proches, 0 question(s) recyclée(s)
+
+. : 56 pages, 0 à corriger, 0 question(s) de FAQ recyclée(s)
+. : 60 pages, 0 cible(s) morte(s), 0 lien(s) a corriger, 0 route(s) vide(s)
+check-layout: 48 pages × 4 largeurs, 0 défaut(s)
+check-sources: 13 source(s), 0 morte(s), 0 injoignable(s), 0 bloquée(s) aux robots
+. : 46 page(s) de contenu, 0 sans simulateur
+. : 48 pages, 0 avec hreflang, 0 à corriger
+. : site anglophone, contrôle sans objet.
+check-portefeuille : 0 paragraphe(s) copiés, 0 site(s) du portefeuille liés, 60 sites comparés.
+check-cookies : 0 défaut (58 pages, Clarity sur 0, GA4 sur 0, langues en)
+check-url-propre: 48 page(s) du sitemap, 0 défaut(s)
+check-premier-ecran : 0 page(s) fautive(s) sur 46 page(s) à simulateur (48 pages lues)
+check-droits : 56 page(s) lues dans dist ; licences citées : OGL ; workflow planifié : non
+  (a) liens soumis à autorisation (citer l’organisme sans lien : titre, adresse en texte, date) : 0
+  (b) relais juridique présenté comme officiel (lien vers le texte officiel, ou « relais non officiel ») : 0
+  (c) copie web.archive.org présentée comme officielle (écrire « copie archivée du JJ/MM/AAAA ») : 0
+  (d) attribution de licence absente du pied de page : 0
+  (e) promesse de mise à jour sans workflow planifié (écrire « lu le JJ/MM/AAAA, mise à jour manuelle ») : 0
+check-droits : 0 défaut
+check-copie : sans objet (pas de data/textes-sources/*.txt)
+  40 page(s), 0 champ(s) mal formaté(s)
+check-contraste: 48 page(s), 0 texte(s) sous le seuil
+check-saisie: 4 page(s) à calculateur, 0 défaut(s)
+  trame        ok         site le plus proche : statepermittest.com (43 % de blocs en commun)
+  chiffres     ok         date de mise à jour visible · 3 source(s) officielle(s) liée(s)
+  credibilite  ok         À propos lié · méthode liée
+  reseau       ok         liens vers : aucun site du portefeuille
+  publicite    ok         0 emplacement(s) publicitaire(s) sur l’accueil
+check-regles : 239 accueils comparés, 0 règle(s) KO ou à revoir
+check-motcle : 0/46 page(s) où le terme-clé du titre manque {}
