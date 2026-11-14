@@ -31,7 +31,7 @@ export default definePage({
 <p>Vehicle tax works on another date. A vehicle built before 1 January 1986 can stop paying vehicle tax from 1 April 2026, but only after an application to put it in the historic tax class. The MOT exemption needs no application. A car can therefore be exempt from one and not the other for a while.</p>
 <h2>Old cars still tested</h2>
 <p>Owners keep testing old cars voluntarily, as an independent check. The DVSA file shows how those cars fare: their failure rate falls with age after twenty years, because the cars still tested are the ones kept in good order.</p>
-${h.table(['First registered', 'Age in ' + h.TY, 'Tests', 'Failed at first attempt'], rows, `All class 4 vehicles of those years tested in ${h.TY}, voluntary tests included. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
+${h.table(['First registered', 'Age in ' + h.TY, 'Tests', 'Failed at first attempt'], rows, `All cars and light vans (class 4) of those years tested in ${h.TY}, voluntary tests included. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
 <p>A roadworthy car remains the owner's duty with or without an MOT. The ${h.a('what-is-checked-in-an-mot', 'checklist of the test')} is a useful list for a self-check, and the ${h.a('mot-failure-rate-by-age', 'age page')} shows the full curve from three years up.</p>
 <p>Sources: ${h.src('gov_historic', 'GOV.UK, historic (classic) vehicles: MOT and vehicle tax')} and ${h.src('dvsa_anon', 'DVSA anonymised MOT results')}.</p>
 `;

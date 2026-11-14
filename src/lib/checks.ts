@@ -14,4 +14,4 @@ export const CAT_CHECK: Record<number, string> = {
 };
 
 /** DVSA defect group names (quarterly tables) → group id of the anonymised data. */
-export const GROUP_ID: Record<string, number> = { 'Lamps, reflectors and electrical equipment': 20158, Suspension: 20218, Tyres: 20449, Brakes: 20003, Visibility: 20147, 'Body, chassis, structure': 20310, 'Noise, emissions and leaks': 20385, Steering: 20106, 'Seat belts and supplementary restraint systems': 20366, 'Road Wheels': 20448, 'Identification of the vehicle': 20000 };
+export const GROUP_ID: Record<string, number> = { 'Lamps, reflectors and electrical equipment': 20158, Suspension: 20218, Tyres: 20449, Brakes: 20003, Visibility: 20147, 'Body, chassis, structure': 20310, 'Noise, emissions and leaks': 20385, Steering: 20106, 'Seat belts and supplementary restraint systems': 20366, 'Road Wheels': 20448, 'Seat belts and airbags': 20366, 'Road wheels': 20448, 'Identification of the vehicle': 20000 };

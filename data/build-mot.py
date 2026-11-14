@@ -47,7 +47,8 @@ CATS = [20000, 20003, 20106, 20185, 20234, 20391, 20518, 20601, 20685, 20725]  #
 cats_present = collections.Counter()
 for mm, c, v in it['cat_model']: cats_present[c] += v
 CATS = [c for c, v in cats_present.most_common() if c in secname and c >= 20000 and v >= 10000]
-cat_label = {c: secname[c] for c in CATS}
+CAT_PLAIN = {'Road Wheels': 'Road wheels', 'Seat belts and supplementary restraint systems': 'Seat belts and airbags'}  # testeurs naïfs 2026-11-14
+cat_label = {c: CAT_PLAIN.get(secname[c], secname[c]) for c in CATS}
 det = {}
 with open(os.path.join(W, 'lookup', 'item_detail.csv')) as fh:
     for r in csv.DictReader(fh, delimiter='|', quoting=csv.QUOTE_NONE):
@@ -69,7 +70,7 @@ def word(w):
     return '-'.join(x if (len(x) <= 3 and x.isalpha() and x not in ('KA', 'UP', 'ROC', 'MAX', 'ONE', 'KIA', 'MCC')) else x.capitalize() for x in w.split('-'))
 def title(s):
     return ' '.join(word(w) for w in s.split(' '))
-LABEL = {('VOLKSWAGEN', 'FOX'): 'Fox', ('TOYOTA', 'IQ'): 'iQ', ('NISSAN', 'NV200'): 'NV200', ('SEAT', 'LEON'): 'Leon', ('HYUNDAI', 'I10'): 'i10', ('HYUNDAI', 'I20'): 'i20', ('HYUNDAI', 'I30'): 'i30', ('HYUNDAI', 'IX35'): 'ix35', ('FORD', 'KA'): 'Ka', ('MERCEDES-BENZ', 'C'): 'C-Class', ('MERCEDES-BENZ', 'E'): 'E-Class', ('MERCEDES-BENZ', 'A'): 'A', ('VOLKSWAGEN', 'UP'): 'Up'}
+LABEL = {('VOLKSWAGEN', 'FOX'): 'Fox', ('TOYOTA', 'IQ'): 'iQ', ('NISSAN', 'NV200'): 'NV200', ('SEAT', 'LEON'): 'Leon', ('HYUNDAI', 'I10'): 'i10', ('HYUNDAI', 'I20'): 'i20', ('HYUNDAI', 'I30'): 'i30', ('HYUNDAI', 'IX35'): 'ix35', ('FORD', 'KA'): 'Ka', ('MERCEDES-BENZ', 'C'): 'C-Class', ('MERCEDES-BENZ', 'E'): 'E-Class', ('MERCEDES-BENZ', 'A'): 'A', ('VOLKSWAGEN', 'UP'): 'Up', ('BMW', 'I3'): 'i3', ('HYUNDAI', 'I40'): 'i40', ('HYUNDAI', 'IX20'): 'ix20', ('VOLKSWAGEN', 'EOS'): 'Eos', ('SEAT', 'MII'): 'Mii', ('KIA', 'RIO'): 'Rio', ('HYUNDAI', 'SANTA FE'): 'Santa Fe', ('MITSUBISHI', 'L200 DOUBLE CAB'): 'L200 Double Cab', ('MINI', 'MINI (R60)'): 'Mini (R60)'}
 def yrs(d, mn=100):
     return {str(y): v for y, v in sorted(d.items()) if v[0] >= mn}
 models = []

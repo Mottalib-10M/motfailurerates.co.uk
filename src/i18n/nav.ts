@@ -12,6 +12,7 @@ const inGroup = (g: Group, lang: Locale) => PAGES.filter((p) => p.group === g).m
 export function navCategories(lang: Locale): NavCategory[] {
   return GROUPS_ORDER.filter((g) => g !== 'models').map((g) => ({ label: GROUP_LABEL[g], links: inGroup(g, lang) })).filter((c) => c.links.length);
 }
-export const navDirect = (_lang: Locale): NavLink[] => [];
+/** Testeurs naïfs 2026-11-14 (tour 2) : les sept contrôles gratuits avant le MOT, accessibles depuis le menu. */
+export const navDirect = (lang: Locale): NavLink[] => [{ href: `${route('home', lang)}#seven-checks`, label: '7 free checks before your MOT' }];
 export const footerColumns = (lang: Locale): NavCategory[] => [...GROUPS_ORDER.map((g) => ({ label: GROUP_LABEL[g], links: inGroup(g, lang) })).filter((c) => c.links.length), { label: 'This site', links: ['home', 'method', 'about', 'contact', 'editorial', 'widget', 'terms', 'privacy', 'cookies'].map((i) => link(i, lang)) }];
 export const popularLinks = (_lang: Locale): NavLink[] => [];

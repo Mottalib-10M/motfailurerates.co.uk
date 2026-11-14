@@ -11,6 +11,7 @@ const props = (tool.props ?? {}) as Record<string, any>;
 const methodHref = route('method', 'en');
 const dueHref = route('mot-due-date', 'en');
 const costHref = route('mot-cost', 'en');
+const checksHref = `${route('home', 'en')}#seven-checks`;
 const currentPath = Astro.url.pathname;
 const kind = tool.kind;
 const mini = kind.startsWith('mini:') ? kind.slice(5) : null;
@@ -19,5 +20,5 @@ const numDefaults: Record<string, number> = {};
 for (const [k, v] of Object.entries(props)) if (typeof v === 'number') numDefaults[k] = v;
 const pages = checkerPages();
 ---
-{(kind === 'checker' || kind === 'compare') && <MotChecker client:load {...props} compare={kind === 'compare'} pages={pages} methodHref={methodHref} dueHref={dueHref} costHref={costHref} currentPath={currentPath} idPrefix={idPrefix ?? 'c'} />}
+{(kind === 'checker' || kind === 'compare') && <MotChecker client:load {...props} compare={kind === 'compare'} pages={pages} methodHref={methodHref} dueHref={dueHref} costHref={costHref} checksHref={checksHref} currentPath={currentPath} idPrefix={idPrefix ?? 'c'} />}
 {mini && <MiniSim client:load kind={mini} href={href} defaults={numDefaults} idPrefix={idPrefix ?? (primary ? 'p' : 'm')} />}

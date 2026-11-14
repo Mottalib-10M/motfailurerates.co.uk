@@ -92,6 +92,8 @@ h1 { font-weight: 700; } h2 { font-weight: 650; } h3 { font-weight: 600; }
 .prose table, table.journal { font-variant-numeric: tabular-nums; border-collapse: collapse; }
 .prose thead th, table.journal thead th { font-variant: small-caps; letter-spacing: .02em; border-bottom: 1px solid var(--color-navy-300); background: transparent; }
 .prose td, .prose th, table.journal td, table.journal th { border-left: 0; border-right: 0; }
+/* Testeurs naïfs 2026-11-14 (tour 2) : dans les listes, un modèle qui a sa page doit se voir cliquable. */
+table.journal td a { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 2px; font-weight: 500; }
 
 /* Résumé replié (Clamp.astro, RECETTE §26 et testeurs naïfs du 2026-11-08) : UN <p> dans le HTML ;
    l'écran montre au moins deux phrases entières, « Lire tout le paragraphe » déplie la suite sans
@@ -120,3 +122,6 @@ p[id$="-help"]:not([role="status"]), [data-fixe], [data-actuellement], [aria-liv
   [aria-live] table tr:has(> td + td) { border-top: 1px solid var(--color-navy-200); padding: .3rem 0; }
   [aria-live] table tr > td + td { flex: 1 1 100%; padding-top: .1rem; text-align: left; font-weight: 600; }
 }
+
+/* Lien « 7 free checks » (menu, résultat) : le titre visé ne passe pas sous la barre fixe. */
+[id] { scroll-margin-top: 5rem; }

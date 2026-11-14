@@ -26,17 +26,15 @@ export function makePage(s: MakeSpec): PageDef {
     faqs: s.faqs,
     body: (h) => {
       const x = h.K(s.make);
-      const rows = x.models.slice(0, 16).map((e) => [h.ml(e.m, e.m.label), e.m.n, h.pc(e.rate), h.vsAge(e.adj)]);
-      // Legend written from this make's own figures: the model with the highest raw rate that still beats cars of its age.
-      const ex = x.models.slice(0, 16).filter((e) => e.adj < 0.98).sort((p, q) => q.rate - p.rate)[0];
-      const legend = ex
-        ? `Ranked against cars of the same age, not by the raw percentage: the ${ex.m.label}, for example, failed ${h.pc(ex.rate)} of its tests, yet had ${h.vsAge(ex.adj)} than cars as old as its own.`
-        : `Ranked against cars of the same age, not by the raw percentage: each ${x.name} model is compared with cars registered in the same years as its own.`;
+      const rows = x.models.slice(0, 16).map((e) => [h.ml(e.m, e.m.label), e.m.n, h.pc(e.rate), h.pc(e.same)]);
+      // Legend written from this make's own figures: a model with a high percentage that still beats cars of its age.
+      const ex = x.models.slice(0, 16).filter((e) => e.rate < e.same - 0.005).sort((p, q) => q.rate - p.rate)[0];
+      const legend = `All registration years together, ranked against cars the same age: from the model that failed least often compared with all cars of the same ages to the one that failed most often, not by the percentage alone.${ex ? ` The ${ex.m.label}, for example, failed ${h.pc(ex.rate)} of its tests, but all cars of the same ages failed ${h.pc(ex.same)}.` : ''}`;
       const ages = [3, 5, 8, 10, 12, 15, 18].filter((a) => E.modelAt(x.k, a, 2000) != null);
       const ageRows = ages.map((a) => [String(E.yearOf(a)), String(a), E.pairAt(x.k, a)![0], h.pc(E.modelAt(x.k, a, 2000)), h.pc(E.nationalAt(a))]);
       return `
 <h2>${x.name} models ranked at equal age</h2>
-${h.table(['Model', 'Tests', 'Failed', 'Against cars the same age'], rows, `${legend} ${x.name} models with 10,000 tests or more, ${h.TY}, from the fewest failures at equal age to the most. DVSA anonymised results.`, ['l', 'r', 'r', 'r'])}
+${h.table(['Model', 'Tests', 'Failed', 'All cars the same age failed'], rows, `${x.name} models with 10,000 tests or more, first-attempt MOT tests of ${h.TY}. ${legend} DVSA anonymised results.`, ['l', 'r', 'r', 'r'])}
 ${s.note(h)}
 <h2>${x.name} MOT failure rate at selected ages</h2>
 ${h.table(['First registered', 'Age in ' + h.TY, 'Tests', x.name + ' failed', 'All makes failed'], ageRows, `${x.name}: share of first-attempt MOT tests failed in ${h.TY}, at ages 3, 5, 8, 10, 12, 15 and 18 (a selection of years; the checker above gives each year of each model).`, ['l', 'r', 'r', 'r', 'r'])}

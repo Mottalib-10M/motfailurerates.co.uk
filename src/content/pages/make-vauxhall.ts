@@ -15,21 +15,21 @@ export default makePage({
   related: ["home", "model-vauxhall-corsa", "model-vauxhall-astra", "cars-least-likely-to-fail-mot"],
   resume: (h) => {
     const { x, r, best, worst, ML, A, N } = kctx(h, MK);
-    const { pc, num, ratio, TY, gb } = h;
-    return `${pc(x.rate)} of the ${num(x.tests)} first-attempt MOT tests of Vauxhalls in ${TY} ended in a failure, against ${pc(gb.rate)} for all makes. Vauxhall is the second most tested make after Ford, and at equal age it failed about ${pc(x.adj! - 1, 0)} more often than average, ${r.rank} of the ${r.of} makes with 300,000 tests or more. Five-year-old Vauxhalls failed ${pc(A(5))} against ${pc(N(5))} for all makes, and twelve-year-old ones ${pc(A(12))} against ${pc(N(12))}. The Corsa and the Astra carry more than half the make's tests, so its figure is largely theirs. The newer Grandland and Crossland sit at or near the national line, the small ${best.m.label} does best at ${ratio(best.adj)}, and the Vivaro and Combo vans fail most. The Insignia, the Zafira and the Mokka each have over 200,000 tests, and all three sit above the line.`;
+    const { pc, num, vs, at, TY, gb } = h;
+    return `${pc(x.rate)} of the ${num(x.tests)} first-attempt MOT tests of Vauxhalls in ${TY} ended in a failure, against ${pc(gb.rate)} for all makes. Vauxhall is the second most tested make after Ford, and at equal age it did worse than average: all vehicles of the same ages failed ${pc(x.same)}. Five-year-old Vauxhalls failed ${pc(A(5))} against ${pc(N(5))} for all makes, and twelve-year-old ones ${pc(A(12))} against ${pc(N(12))}. The Corsa and the Astra carry more than half the make's tests, so its figure is largely theirs. The newer Grandland and Crossland sit at or near the national line, the small ${best.m.label} does best (${at(best.m)}), and the Vivaro and Combo vans fail most. The Insignia, the Zafira and the Mokka each have over 200,000 tests, and all three sit above the line.`;
   },
   note: (h) => {
     const { x, r, best, worst, ML, A, N } = kctx(h, MK);
-    const { pc, num, ratio, TY, gb } = h;
-    return `<p>Between its two big sellers, the Astra does better at equal age, ${ratio(ML('Astra').adj)} against ${ratio(ML('Corsa').adj)} for the Corsa. The Meriva people carrier sits close to the Astra, and the Zafira and the Mokka crossover close to the Corsa.</p>`;
+    const { pc, num, vs, at, TY, gb } = h;
+    return `<p>Between its two big sellers, the Astra does better at equal age. Astra: ${at(ML('Astra').m)}; Corsa: ${at(ML('Corsa').m)}. The Meriva people carrier sits close to the Astra, and the Zafira and the Mokka crossover close to the Corsa.</p>`;
   },
   faqs: (h) => {
     const { x, r, best, worst, ML, A, N } = kctx(h, MK);
-    const { pc, num, ratio, TY, gb } = h;
+    const { pc, num, vs, at, TY, gb } = h;
     return [
-      { q: "Do Vauxhalls fail the MOT more than other makes?", a: `Yes, at equal age. In ${TY}, Vauxhalls failed about ${pc(x.adj! - 1, 0)} more often than vehicles of the same registration years, and only Citroen and Renault did worse among the ${r.of} makes with 300,000 tests or more. Their raw rate was ${pc(x.rate)}, against ${pc(gb.rate)} for all makes.` },
-      { q: "Which Vauxhall is least likely to fail the MOT?", a: `The ${best.m.label}, a small city car, with a ratio of ${ratio(best.adj)} at equal age in ${TY}. The Agila and the Grandland sit just under the national line, at ${ratio(ML('Agila').adj)} and ${ratio(ML('Grandland').adj)}. The ${worst.m.label} van had the highest ratio, ${ratio(worst.adj)}, followed by the Combo.` },
-      { q: "Is the Corsa or the Astra better at the MOT?", a: `The Astra, at equal age: its ratio was ${ratio(ML('Astra').adj)} in ${TY} against ${ratio(ML('Corsa').adj)} for the Corsa. In raw terms the two are closer, ${pc(ML('Astra').rate)} and ${pc(ML('Corsa').rate)}. Each has its own page with the rate for every year of registration and the defects behind its failures.` },
+      { q: "Do Vauxhalls fail the MOT more than other makes?", a: `Yes, at equal age. In ${TY}, ${vs(x.k)}, and only Citroen and Renault did worse at equal age among the makes with 300,000 tests or more. All makes together failed ${pc(gb.rate)}.` },
+      { q: "Which Vauxhall is least likely to fail the MOT?", a: `The ${best.m.label}, a small city car: at equal age, in ${TY}, ${at(best.m)}. The Agila and the Grandland sit just under the national line: the Agila ${at(ML('Agila').m)}, the Grandland ${at(ML('Grandland').m)}. The ${worst.m.label} van did worst, ${at(worst.m)}, followed by the Combo.` },
+      { q: "Is the Corsa or the Astra better at the MOT?", a: `The Astra, at equal age. In ${TY}, all years together, the Astra failed ${at(ML('Astra').m)}, and the Corsa ${at(ML('Corsa').m)}. Each has its own page with the rate for every year of registration and the defects behind its failures.` },
     ];
   },
 });

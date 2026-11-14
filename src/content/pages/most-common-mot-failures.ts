@@ -33,7 +33,7 @@ export default definePage({
 ${h.table(['Part of the car', 'Share of tests failed on it', 'Share of failure items'], cats, `DVSA table DVSA/MOT/03, classes 3 and 4, ${h.P.national.yearLabel}.`, ['l', 'r', 'r'])}
 <h2>The 20 defects recorded most often</h2>
 <p>The anonymised file goes further: it names every defect behind a failure. Over the ${h.TY} tests, the twenty below were recorded most often. Several are visible from the kerb in a few minutes: tread depth, cords showing through a tyre, a lamp out, a wiper smearing the screen, an empty washer bottle.</p>
-${h.table(['Rank', 'Defect', 'Times recorded', 'DVSA category'], top, `Failure items (fail and repaired-at-test) on class 4 normal tests, ${h.TY}. DVSA anonymised MOT results.`, ['r', 'l', 'r', 'l'])}
+${h.table(['Rank', 'Defect', 'Times recorded', 'DVSA category'], top, `Failure items (fail and repaired-at-test) on first-attempt tests of cars and light vans (class 4), ${h.TY}. DVSA anonymised MOT results.`, ['r', 'l', 'r', 'l'])}
 <h2>Young cars and old cars fail on different things</h2>
 <p>At the first MOT, three years after registration, the leading groups on failed cars are ${h.lc(a3[0].name)} (${h.pc(a3[0].s)} of failures), ${h.lc(a3[1].name)} (${h.pc(a3[1].s)}) and ${h.lc(a3[2].name)} (${h.pc(a3[2].s)}): consumables more than wear. At fifteen years, ${h.lc(a15[0].name)} (${h.pc(a15[0].s)}) and ${h.lc(a15[1].name)} (${h.pc(a15[1].s)}) lead, and ${h.lc(a15[2].name)} follow at ${h.pc(a15[2].s)}, while rust on the body and structure becomes a real cause. The tool above gives the share for any group and age. For a single model, the ${h.a('home', 'checker')} names the three groups behind most of its failures.</p>
 <h2>Defects you can fix before the test</h2>

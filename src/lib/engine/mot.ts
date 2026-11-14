@@ -50,11 +50,32 @@ export const modelAt = (m: Model | Make, age: number, min = 300) => { const p = 
 export const pairAt = (m: Model | Make, age: number) => m.y[String(yearOf(age))] ?? null;
 /** Ages (3 and over) with at least `min` tests, youngest first. */
 export const ages = (m: Model | Make, min = 300) => Object.entries(m.y).filter(([, p]) => p[0] >= min).map(([y]) => ageOf(y)).filter((a) => a >= 3).sort((a, b) => a - b);
-/** The model's rate set against all cars of the same ages, weighted by its own age mix: > 1 means it fails more often than an average car of the same age. */
+/** Model's own rate over the registration years published for it (each with at least 100 tests). */
+function ownRate(m: Model | Make) {
+  let f = 0, n = 0;
+  for (const [y, p] of Object.entries(m.y)) { if (rate(D.national[y]) == null) continue; f += p[1]; n += p[0]; }
+  return n ? f / n : null;
+}
+/** Rate of all cars with the same age mix, over the same years: each test weighted by the national rate of its year. */
+function mixRate(m: Model | Make) {
+  let exp = 0, n = 0;
+  for (const [y, p] of Object.entries(m.y)) { const r = rate(D.national[y]); if (r == null) continue; exp += p[0] * r; n += p[0]; }
+  return n ? exp / n : null;
+}
+/** Order used by every ranking: the model's rate divided by that of all cars of the same ages (never shown as a number). */
 export function ageAdjusted(m: Model | Make) {
-  let exp = 0, f = 0;
-  for (const [y, p] of Object.entries(m.y)) { const a = ageOf(y); if (a < 3) continue; const r = nationalAt(a); if (r == null) continue; exp += p[0] * r; f += p[1]; }
-  return exp ? f / exp : null;
+  const o = ownRate(m), s = mixRate(m);
+  return o != null && s ? o / s : null;
+}
+/**
+ * Failure rate of all cars of the same ages as this model, set beside the model's own rate (m.f / m.n), so that
+ * every comparison on the site is two percentages of tests failed: "21.4% failed, against 24.5% for all cars of
+ * the same ages" (testeurs naïfs du 2026-11-14, tour 3). It is the model's rate divided by `ageAdjusted`, so the
+ * two percentages always rank models in the same order as the lists do.
+ */
+export function sameAgeRate(m: Model | Make) {
+  const a = ageAdjusted(m);
+  return a ? m.f / m.n / a : null;
 }
 /** Model rank among models with at least `min` tests, on the age-adjusted ratio (1 = fewest failures). */
 export function rankAdjusted(m: Model, min = 50000) {
@@ -75,7 +96,7 @@ const NAME_FIX: Record<string, string> = { 'Rbt (sp)': 'Service brake (roller br
 export const itemText = (r: number) => {
   const i = item(r); if (!i) return String(r);
   const n = i.n === 'Condition' && i.c === 20449 ? 'Tyre' : NAME_FIX[i.n] ?? i.n;
-  return `${n}: ${i.d.replace(/\s+/g, ' ').replace(/\.$/, '')}`;
+  return `${n}: ${i.d.replace(/\s+/g, ' ').replace(/\.$/, '').replace('constant velocity boot', 'rubber boot over the joint')}`;
 };
 export const fuelRate = (fuel: string, age: number) => rate(D.fuel[fuel]?.[String(yearOf(age))]);
 export const fuelPair = (fuel: string, age: number) => D.fuel[fuel]?.[String(yearOf(age))] ?? null;

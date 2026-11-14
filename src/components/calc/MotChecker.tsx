@@ -11,6 +11,7 @@ import LITE from '../../data/mot-lite.json';
 import PARAMS from '../../data/params-2026.json';
 import { formatNumber, formatPercent } from '../../lib/format';
 import { readParams, str, num, updateURL } from '../../lib/url-state';
+import { verdictOf, verdictWords, an, nameOf } from '../../lib/compare';
 
 type Pair = [number, number];
 type Row = [string, string, Record<string, Pair>, Array<[number, number]>];
@@ -36,7 +37,7 @@ const NAME_HINT: Record<string, string> = {
 };
 const norm = (s?: string) => (s ?? '').replace(/\/+$/, '');
 
-interface Props { make?: string; model?: string; year?: number; compare?: boolean; make2?: string; model2?: string; pages?: Record<string, string>; methodHref?: string; dueHref?: string; costHref?: string; currentPath?: string; modelHelp?: string; idPrefix?: string }
+interface Props { make?: string; model?: string; year?: number; compare?: boolean; make2?: string; model2?: string; pages?: Record<string, string>; methodHref?: string; dueHref?: string; costHref?: string; currentPath?: string; modelHelp?: string; idPrefix?: string; checksHref?: string }
 
 function useChoice(mk0: string, md0: string, y0: number) {
   const [mk, setMk] = useState(mk0);
@@ -48,7 +49,10 @@ function useChoice(mk0: string, md0: string, y0: number) {
   return { mk, md: row[1], y: yy, row, ys, setMk: (v: string) => { setMk(v); setMd(modelsOf(v)[0][1]); }, setMd, setY };
 }
 
-export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015, compare = false, make2 = 'Vauxhall', model2 = 'Astra', pages = {}, methodHref, dueHref, costHref, currentPath, modelHelp, idPrefix = 'c' }: Props) {
+/** One comparison, one unit: "21.4% failed, against 24.5% for all cars the same age." */
+const against = (r: number, n: number) => `${pc(r)} failed, against ${pc(n)} for all cars the same age`;
+
+export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015, compare = false, make2 = 'Vauxhall', model2 = 'Astra', pages = {}, methodHref, dueHref, costHref, checksHref, currentPath, modelHelp, idPrefix = 'c' }: Props) {
   const a = useChoice(make, model, year);
   const b = useChoice(make2, model2, year);
   useEffect(() => {
@@ -59,28 +63,34 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
   }, []);
   useEffect(() => { updateURL({ make: a.mk, model: a.md, year: a.y }); }, [a.mk, a.md, a.y]);
   const id = (x: string) => `${idPrefix}-${x}`;
+  const nm = nameOf(a.mk, a.md);
+  // In the test year: the car's age then, and how that model did at that age.
+  const age = TY - a.y;
   const p = a.row[2][String(a.y)];
   const r = rt(p);
   const nat = rt(L.national[String(a.y)]);
-  const age = TY - a.y;
-  const diff = r != null && nat != null ? r - nat : null;
-  const verdict = diff == null ? '' : Math.abs(diff) < 0.015 ? 'about the same as average for its age' : diff < 0 ? `better than average for its age (${formatNumber(Math.abs(diff) * 100, 1)} percentage points lower)` : `worse than average for its age (${formatNumber(diff * 100, 1)} percentage points higher)`;
-  // Age today: the same car is older now than in the test year; show how cars of that age did in TY.
+  // Today: the car is older. Cars of that age in the test year (registered yThen) tell what the car faces now.
   const ageNow = NOW - a.y;
   const yThen = TY - ageNow;
   const pThen = a.row[2][String(yThen)];
   const rThen = pThen && pThen[0] >= MIN ? rt(pThen) : null;
   const natThen = rt(L.national[String(yThen)]);
-  const pb = b.row[2][String(a.y)];
-  const rb = rt(pb);
+  const older = ageNow !== age;
+  /** Main answer: the rate at the age the car is now (the model's own when it has 100 tests, else all cars). */
+  const main = older ? (rThen ?? natThen) : r;
+  const mainNat = older ? natThen : nat;
+  const pb = b.row[2][String(older ? yThen : a.y)];
+  const rb = pb && pb[0] >= MIN ? rt(pb) : null;
+  const ra = older ? rThen : r;
   const page = pages[`${a.row[0]}|${a.row[1]}`];
   const href = page && norm(page) !== norm(currentPath) ? page : undefined;
-  const gap = r != null && rb != null ? r - rb : null;
   const opts = (rows: string[]) => rows.map((v) => ({ value: v, label: v }));
-  const yOpts = (r0: ReturnType<typeof useChoice>) => r0.ys.map((v) => ({ value: String(v), label: `${v} (aged ${TY - v} in ${TY}, ${NOW - v} now)` }));
+  const yOpts = (r0: ReturnType<typeof useChoice>) => r0.ys.map((v) => ({ value: String(v), label: `${v} (${NOW - v} years old now)` }));
+  const link = 'font-medium text-accent-700 underline underline-offset-2';
+  const nmb = nameOf(b.mk, b.md);
   return (
     <div data-chrome className="rechner border border-navy-300 bg-white p-4 sm:p-5">
-      <p data-reponse className="mb-4 text-sm text-navy-800">The percentage: share of {TY} MOT tests on these cars that <strong>failed at the first attempt</strong> (retests excluded). That is the first MOT, at three years, only for {TY - 3} cars.</p>
+      <p data-reponse className="mb-4 text-sm text-navy-800">The percentage: of every 100 MOT tests of these cars in {TY}, how many <strong>failed at the first attempt</strong>, before any repair.</p>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <form className="grid content-start gap-4" onSubmit={(e) => e.preventDefault()}>
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 sm:gap-y-0">
@@ -88,7 +98,7 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
             <SelectField id={id('model')} label="Model" value={a.md} onChange={a.setMd} options={opts(modelsOf(a.mk).map((m) => m[1]))} help={modelHelp} />
           </div>
           {NAME_HINT[a.mk] && <p className="-mt-2 text-xs text-navy-600">{NAME_HINT[a.mk]}</p>}
-          <SelectField id={id('year')} label="Year first registered" value={String(a.y)} onChange={(v) => a.setY(Number(v))} options={yOpts(a)} help={`As on the V5C logbook. Cars registered after ${TY - 3} had no MOT yet in ${TY}.`} />
+          <SelectField id={id('year')} label="Year first registered" value={String(a.y)} onChange={(v) => a.setY(Number(v))} options={yOpts(a)} help={`As on the V5C logbook; cars registered after ${TY - 3} had no MOT in ${TY}.`} />
           {compare && (
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 border-t border-navy-200 pt-4 sm:grid-cols-2 sm:gap-y-0">
               <SelectField id={id('make2')} label="Compare with: make" value={b.mk} onChange={b.setMk} options={opts(MAKES)} />
@@ -97,21 +107,39 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
           )}
         </form>
         <div data-resultat aria-live="polite" className="border-l-4 border-accent-500 bg-accent-50 p-4">
-          <p className="text-sm font-medium text-navy-700">{a.mk} {a.md} registered in {a.y}: failed the MOT at the first attempt in {TY}</p>
-          <p className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(r)}</p>
-          <p className="mt-1 text-sm text-navy-800">{p ? <>{formatNumber(p[1], 0)} of {formatNumber(p[0], 0)} tests. </> : null}All cars aged {age} in {TY}: {pc(nat)} failed{verdict ? <>. This model did {verdict}</> : null}.</p>
-          {compare && <p className="mt-2 text-sm text-navy-800"><strong>{b.mk} {b.md}, {a.y}:</strong> {rb == null ? `fewer than ${MIN} tests at that age` : <><span className="tabular-nums text-lg font-bold text-navy-900">{pc(rb)}</span> of {formatNumber(pb![0], 0)} tests failed at the first attempt</>}.</p>}
-          {compare && gap != null && <p className="mt-1 text-sm font-semibold text-navy-900">{Math.abs(gap) < 0.015 ? `The ${a.md} and the ${b.md} registered in ${a.y} failed about as often as each other (${pc(r)} and ${pc(rb)}).` : `The ${a.y} ${a.md} failed ${formatNumber(Math.abs(gap) * 100, 1)} percentage points ${gap < 0 ? 'less' : 'more'} often than the ${a.y} ${b.md} (${pc(r)} against ${pc(rb)}).`}</p>}
-          <p className="mt-2 text-sm font-semibold text-navy-900">A rate describes these cars as a group, not your car: tyres, brakes and lights you check before the test change your own odds.</p>
-          {a.row[3].length > 0 && <p className="mt-2 text-sm text-navy-800">Most frequent reasons on a failed {a.md}: {a.row[3].map(([c, s]) => `${lower(L.cats[String(c)] ?? '')} ${pc(s)}`).join(', ')} of failed tests (one test can have several).</p>}
-          {ageNow !== age && <p className="mt-2 text-sm text-navy-800">Your car is {ageNow} now: in {TY}, {rThen != null ? <>{a.md} cars that age (registered {yThen})</> : <>cars that age (registered {yThen})</>} failed {pc(rThen ?? natThen)}. National rate since: {pc(NAT.q1InitialFailRate)} ({NAT.q1Label}).</p>}
-          <div className="mt-2 text-sm text-navy-800">MOT fee: up to £{formatNumber(FEE, 2)} for a car.{costHref && <> <a href={costHref} className="font-medium text-accent-700 underline underline-offset-2">Cost and retests</a></>}{dueHref && <> · <a href={dueHref} className="font-medium text-accent-700 underline underline-offset-2">When is my MOT due?</a></>}</div>
+          {older ? (
+            <>
+              <p className="text-sm font-medium text-navy-700">{nm} registered in {a.y}: {ageNow} years old now</p>
+              <p data-principal className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(main)}</p>
+              <p className="mt-1 text-sm text-navy-800">{rThen != null
+                ? <>of {a.md} cars aged {ageNow} (registered in {yThen}) failed the MOT at the first attempt in {TY}. {verdictWords[verdictOf(rThen, natThen!)]}: {against(rThen, natThen!)}.</>
+                : <>of all cars aged {ageNow} (registered in {yThen}) failed the MOT at the first attempt in {TY}. Too few {nm} tests at that age to give its own figure.</>}</p>
+              <div className="mt-3 border-t border-accent-200 pt-3">
+                <p className="text-sm font-medium text-navy-700">Your own year, {a.y}: at {age}, the age it was in {TY}</p>
+                <p className="tabular-nums text-2xl font-bold text-navy-900">{pc(r)}</p>
+                <p className="mt-1 text-sm text-navy-800">{r != null && nat != null ? <>{verdictWords[verdictOf(r, nat)]}: {against(r, nat)}.</> : null}</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-navy-700">{nm} registered in {a.y}: failed the MOT at the first attempt in {TY}</p>
+              <p data-principal className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(r)}</p>
+              <p className="mt-1 text-sm text-navy-800">{p ? <>{formatNumber(p[1], 0)} of {formatNumber(p[0], 0)} tests. </> : null}{r != null && nat != null ? <>{verdictWords[verdictOf(r, nat)]}: {against(r, nat)}.</> : null}</p>
+            </>
+          )}
+          {compare && <p className="mt-3 border-t border-accent-200 pt-3 text-sm text-navy-800"><strong>{nmb}, registered {older ? yThen : a.y}:</strong> {rb == null ? `fewer than ${MIN} tests at that age, no figure` : <><span className="tabular-nums text-lg font-bold text-navy-900">{pc(rb)}</span> of {formatNumber(pb![0], 0)} tests failed at the first attempt</>}.</p>}
+          {compare && ra != null && rb != null && <p className="mt-1 text-sm font-semibold text-navy-900">{verdictOf(ra, rb) === 'same' ? `The ${a.md} and the ${b.md} failed about as often as each other: ${pc(ra)} and ${pc(rb)}.` : `The ${a.md} failed ${verdictOf(ra, rb) === 'better' ? 'less' : 'more'} often than the ${b.md}: ${pc(ra)} against ${pc(rb)}.`}</p>}
+          <p className="mt-2 text-sm font-semibold text-navy-900">A rate describes these cars as a group: your own checks before the test change your odds.</p>
+          {checksHref && <a href={checksHref} className="mt-2 inline-block rounded-lg bg-accent-700 px-3 py-2 text-sm font-semibold text-white hover:bg-accent-800">7 free checks before your MOT →</a>}
+          {a.row[3].length > 0 && <p className="mt-2 text-sm text-navy-800">Most frequent reasons when {an(a.md)} failed: {a.row[3].map(([c, s]) => `${lower(L.cats[String(c)] ?? '')} ${pc(s)}`).join(', ')} of failed tests (one test can have several).</p>}
+          <p className="mt-2 text-sm text-navy-800">Latest national rate: {pc(NAT.q1InitialFailRate)} of all cars failed, {NAT.q1Label}.</p>
+          <div className="mt-2 text-sm text-navy-800">MOT fee: up to £{formatNumber(FEE, 2)} for a car.{costHref && <> <a href={costHref} className={link}>Cost and retests</a></>}{dueHref && <> · <a href={dueHref} className={link}>When is my MOT due?</a></>}</div>
           {href && <a href={href} className="mt-3 inline-block text-sm font-medium text-accent-700 hover:underline">Every age and failure reason for the {a.md} →</a>}
         </div>
       </div>
       <div className="mt-4 overflow-x-auto">
         <table className="journal w-full text-sm">
-          <caption className="mb-2 text-left text-sm text-navy-600">{a.mk} {a.md}, failure rate at the first attempt by year of first registration, {TY} tests (latest 12 years; older years are in the Year list)</caption>
+          <caption className="mb-2 text-left text-sm text-navy-600">{nm}, share of {TY} MOT tests failed at the first attempt, by year of first registration, against all cars registered the same year. In bold: your year, and {yThen}, cars as old in {TY} as yours is now</caption>
           <thead><tr>
             <th scope="col" className="px-2 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-700">Registered</th>
             <th scope="col" className="px-2 py-2 text-right text-xs font-semibold uppercase tracking-wide text-navy-700">Tests</th>
@@ -119,8 +147,8 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
             <th scope="col" className="px-2 py-2 text-right text-xs font-semibold uppercase tracking-wide text-navy-700">All cars failed</th>
           </tr></thead>
           <tbody>
-            {(a.ys.slice(0, 12).includes(a.y) ? a.ys.slice(0, 12) : [...a.ys.slice(0, 12), a.y]).map((v) => (
-              <tr key={v} className={v === a.y ? 'bg-accent-50 font-semibold' : ''}>
+            {[...new Set([...a.ys.slice(0, 12), a.y, ...(a.ys.includes(yThen) ? [yThen] : [])])].sort((x, y) => y - x).map((v) => (
+              <tr key={v} className={v === a.y || v === yThen ? 'bg-accent-50 font-semibold' : ''}>
                 <td className="border-b border-navy-100 px-2 py-2 text-navy-900">{v}</td>
                 <td className="tabular-nums border-b border-navy-100 px-2 py-2 text-right">{formatNumber(a.row[2][String(v)][0], 0)}</td>
                 <td className="tabular-nums border-b border-navy-100 px-2 py-2 text-right">{pc(rt(a.row[2][String(v)]))}</td>

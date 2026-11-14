@@ -37,7 +37,7 @@ ${h.table(['Postcode area', 'Tests (all ages)', '6 to 9 years', '10 to 14 years'
 <h2>Reading the gap between areas</h2>
 <p>The gap is large: at six to nine years, roughly twice as many cars failed in the highest areas as in the lowest. Age is fixed within each column, so it is not the age of the local fleet. The data holds no information on roads, salt, weather, mileage by area or how cars are maintained, so it cannot say which of these matters. What it does say is that a car bought from one region and tested in another may meet a different average, while the test itself, set by the DVSA inspection manual, is the same everywhere.</p>
 <h2>Your area against your model</h2>
-<p>Area moves the rate by a few points; age and model move it by more. The ${h.a('home', 'checker')} gives the rate for a make, model and year, and the ${h.a('mot-failure-rate-by-age', 'age page')} the national curve. Every area of England, Scotland and Wales with at least 20,000 tests is in the tool above; Northern Ireland, tested by the DVA, is not in the DVSA file.</p>
+<p>Area moves the rate a little; age and model move it more. The ${h.a('home', 'checker')} gives the rate for a make, model and year, and the ${h.a('mot-failure-rate-by-age', 'age page')} the national curve. Every area of England, Scotland and Wales with at least 20,000 tests is in the tool above; Northern Ireland, tested by the DVA, is not in the DVSA file.</p>
 <p>Sources: ${h.src('dvsa_anon', 'DVSA anonymised MOT results')} (${h.TY}) and ${h.src('dvsa_stats', 'DVSA MOT testing data')}.</p>
 `;
   },

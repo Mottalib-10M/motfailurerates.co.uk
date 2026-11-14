@@ -25,7 +25,7 @@ export default definePage({
     const rows = h.P.categories.rows.map((r) => [String(r[0]), h.pc(r[1] as number), (CAT_CHECK[GROUP_ID[String(r[0])]] ?? '').split(';')[0].split(':')[0]]);
     return `
 <h2>What is checked in an MOT, part by part</h2>
-<p>The inspection manual for cars and passenger vehicles is divided into the sections below. The middle column is the share of all tests that failed on that part in ${h.P.national.yearLabel}; the last column, a first check you can make yourself.</p>
+<p>The inspection manual for cars and passenger vehicles is divided into the sections below. “Tests failed on it” is the share of all tests that failed on that part in ${h.P.national.yearLabel}; “A first check at home”, something you can look at yourself before the test.</p>
 ${h.table(['Part of the car', 'Tests failed on it', 'A first check at home'], rows, `Share of tests: DVSA table DVSA/MOT/03, classes 3 and 4, ${h.P.national.yearLabel}.`, ['l', 'r', 'l'])}
 <h2>How a defect is graded</h2>
 <p>Since 2018 every defect found falls in one of three categories, shown on the test result. A minor defect is recorded and the car passes. A major defect fails it. A dangerous defect fails it too and the car should not be driven until repaired, even if the previous certificate has not run out. Advisories are notes about parts that will need attention soon; they do not fail a car but are worth reading, because many become majors at the next test.</p>

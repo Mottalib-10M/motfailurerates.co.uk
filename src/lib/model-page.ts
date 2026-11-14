@@ -6,6 +6,7 @@
 import { definePage, type PageDef, type FAQ } from './guide-types';
 import type { Helpers } from './helpers';
 import * as E from './engine/mot';
+import { an } from './compare';
 
 import { CAT_CHECK } from './checks';
 export { CAT_CHECK };
@@ -36,11 +37,11 @@ export function modelPage(s: ModelSpec): PageDef {
       const fuels = x.fuels.filter((f) => f[1][0] >= 1000).map(([f, v]) => [h.E.FUELS[f], v[0], h.pc(v[0] / x.tests, 0), h.pc(v[1] / v[0])]);
       return `
 <h2>${x.name} MOT failure rate by age</h2>
-<details class="not-prose my-4 border border-navy-200 bg-white px-4 py-3"><summary class="cursor-pointer font-semibold text-navy-900">Show every year as a table (the checker above gives the same figures year by year)</summary>
+<details class="not-prose my-4 border border-navy-200 bg-white px-4 py-3"><summary class="cursor-pointer font-semibold text-navy-900">Show the years ${x.byAge[0].year} to ${x.byAge[Math.min(13, x.byAge.length - 1)].year} in one table (the same figures as the checker above)</summary>
 ${h.ageTable(s.make, s.model)}
 </details>
 ${s.note(h)}
-<h2>What fails a ${x.m.label} at the MOT</h2>
+<h2>What fails ${an(x.m.label)} at the MOT</h2>
 ${h.catTable(s.make, s.model)}
 ${h.table(['Failure item', 'Times recorded'], items, `${x.name}: the failure items most often recorded on its first-attempt MOT tests of ${h.TY}, all ages together.`, ['l', 'r'])}
 <h2>${x.m.label} by fuel</h2>
