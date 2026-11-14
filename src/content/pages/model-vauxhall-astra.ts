@@ -16,7 +16,7 @@ export default modelPage({
   resume: (h) => {
     const { x, Y, F, FN, cat, T } = mctx(h, MK, MD);
     const { pc, num, ratio, pts, TY, gb } = h;
-    return `${pc(x.rate)} of the ${num(x.tests)} Vauxhall Astras tested in ${TY} failed their first MOT of the year. The figure is well above the ${pc(gb.rate)} for all cars, but the Astra's age explains a good part of it: compared with cars of the same registration years, it failed about ${pc(x.adj! - 1, 0)} more often, a ratio of ${ratio(x.adj)} and rank ${num(x.rank)} of ${x.of}. The pattern by year is mixed. Astras from 2016 to 2018 sit close to the national line, 2016 cars failing ${pc(Y(2016).r)} against ${pc(Y(2016).nat)}, while 2014 and 2015 cars sit four to five points above it, and the gap widens again for the 2005 to 2009 cars. A fractured coil spring tops the list of Astra failure items by a wide margin, ${num(T(0))} records.`;
+    return `${pc(x.rate)} of the ${num(x.tests)} Vauxhall Astras tested in ${TY} failed at the first attempt. The figure is well above the ${pc(gb.rate)} for all cars, but the Astra's age explains a good part of it: compared with cars of the same registration years, it failed about ${pc(x.adj! - 1, 0)} more often, a ratio of ${ratio(x.adj)} and rank ${num(x.rank)} of ${x.of}. The pattern by year is mixed. Astras from 2016 to 2018 sit close to the national line, 2016 cars failing ${pc(Y(2016).r)} against ${pc(Y(2016).nat)}, while 2014 and 2015 cars sit four to five points above it, and the gap widens again for the 2005 to 2009 cars. A fractured coil spring tops the list of Astra failure items by a wide margin, ${num(T(0))} records.`;
   },
   note: (h) => {
     const { x, Y, F, FN, cat, T } = mctx(h, MK, MD);
@@ -28,7 +28,7 @@ export default modelPage({
     const { x, Y, F, FN, cat, T } = mctx(h, MK, MD);
     const { pc, num, ratio, pts, TY, gb } = h;
     return [
-      { q: "What is the Vauxhall Astra MOT failure rate?", a: `${pc(x.rate)} in the ${TY} DVSA results: ${num(x.fails)} of ${num(x.tests)} Astra first tests ended in a failure. Across all cars the rate was ${pc(gb.rate)}. Much of the difference is age, since many Astras on the road are over ten years old; at equal age the Astra still failed slightly more often than average.` },
+      { q: "What is the Vauxhall Astra MOT failure rate?", a: `${pc(x.rate)} in the ${TY} DVSA results: ${num(x.fails)} of ${num(x.tests)} Astra first-attempt tests ended in a failure. Across all cars the rate was ${pc(gb.rate)}. Much of the difference is age, since many Astras on the road are over ten years old; at equal age the Astra still failed slightly more often than average.` },
       { q: "Are older Astras more likely to fail the MOT?", a: `Yes. Astras registered in 2018 failed ${pc(Y(2018).r)} of their tests, those from 2012 ${pc(Y(2012).r)} and those from 2006 ${pc(Y(2006).r)}. All cars follow the same climb with age; the Astra stays near the national line up to the 2010 cars and a few points above it for older ones.` },
       { q: "What do Astras fail on most?", a: `Lamps and suspension, in nearly equal measure: ${pc(x.cats[0].s, 0)} and ${pc(x.cats[1].s, 0)} of failed Astra tests. The single items recorded most were fractured coil springs, tyre tread below 1.6 mm and brake pads under 1.5 mm, ahead of position lamps and incorrect headlamp aim.` },
     ];

@@ -13,7 +13,7 @@ export const SITE_FOUNDED = '2026';
 export const LAST_UPDATED = '2026-11-13';
 export const AUTHOR_NAME = 'Radif Partners';
 export const AUTHOR_ROLE: Record<string, string> = {"en": "Independent publisher of MOT failure rates by make, model and age, computed from the DVSA anonymised MOT test results"};
-export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners reads the anonymised MOT test results that DVSA publishes under the Open Government Licence, one line per test, and counts how often each make and model failed its first MOT test of the year at each age, with the defect groups behind those failures. The national rates come from the DVSA quarterly tables, and fees, due dates and retest rules from GOV.UK. The site checks no number plate, sells no history report, books no test and asks for no e-mail address."};
+export const AUTHOR_DESC: Record<string, string> = {"en": "Radif Partners reads the anonymised MOT test results that DVSA publishes under the Open Government Licence, one line per test, and counts how often each make and model failed the MOT at the first attempt at each age, with the defect groups behind those failures. The national rates come from the DVSA quarterly tables, and fees, due dates and retest rules from GOV.UK. The site checks no number plate, sells no history report, books no test and asks for no e-mail address."};
 /** Sujets sur lesquels l'editeur est competent (schema.org knowsAbout). Ce sont les
  *  themes reellement traites par le site, pas une liste de mots-cles : un sujet
  *  declare ici sans page qui le couvre est une declaration fausse. */

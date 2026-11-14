@@ -20,7 +20,10 @@ export function helpers(strict = false) {
   const num = (n: number, d = 0) => formatNumber(n, d);
   /** A difference of two rates in points: 0.035 → "3.5 points". */
   const pts = (x: number | null | undefined) => (x == null ? 'n/a' : `${formatNumber(Math.abs(x) * 100, 1)} point${Math.abs(x * 100 - 1) < 0.05 ? '' : 's'}`);
-  const ratio = (x: number | null | undefined) => (x == null ? 'n/a' : `${formatNumber(x, 2)}`);
+  /** An age-adjusted ratio in words: 0.63 → "37% fewer failures", 1.12 → "12% more failures" (testeurs naïfs 2026-11-14). */
+  const vsAge = (x: number | null | undefined) => (x == null ? 'n/a' : Math.abs(x - 1) < 0.02 ? 'about the same' : `${formatNumber(Math.abs(1 - x) * 100, 0)}% ${x < 1 ? 'fewer' : 'more'} failures`);
+  /** The ratio as a number, always followed by its meaning in words. */
+  const ratio = (x: number | null | undefined) => (x == null ? 'n/a' : `${formatNumber(x, 2)} (${vsAge(x)})`);
   const a = (id: string, text: string) => {
     if (!ROUTES.some((r) => r.id === id)) { if (strict) throw new Error(`Unknown page id in a link: ${id}`); return text; }
     return `<a href="${route(id, 'en')}">${text}</a>`;
@@ -53,13 +56,13 @@ export function helpers(strict = false) {
   const ml = (m: E.Model, text?: string) => { const id = `model-${E.modelId(m)}`; return pageById(id) ? a(id, text ?? `${m.makeLabel} ${m.label}`) : (text ?? `${m.makeLabel} ${m.label}`); };
   const ageTable = (mk: string, md: string, caption?: string) => {
     const x = M(mk, md);
-    return table(['First registered', 'Age in ' + TY, 'Tests', `${x.m.label} failed`, 'All cars'], x.byAge.slice(0, 14).map((r) => [String(r.year), String(r.age), r.n, pc(r.r), pc(r.nat)]), caption ?? `${x.name}: share of first MOT tests failed in ${TY}, by year of first registration, against all cars of the same age. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r', 'r']);
+    return table(['First registered', 'Age in ' + TY, 'Tests', `${x.m.label} failed`, 'All cars failed'], x.byAge.slice(0, 14).map((r) => [String(r.year), String(r.age), r.n, pc(r.r), pc(r.nat)]), caption ?? `${x.name}: share of first-attempt MOT tests failed in ${TY}, by year of first registration, against all cars of the same age. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r', 'r']);
   };
   const catTable = (mk: string, md: string) => {
     const x = M(mk, md);
     return table(['Defect group', `Share of failed ${x.m.label} tests`], x.cats.filter((c) => c.s >= 0.01).map((c) => [c.name, pc(c.s)]), `${x.name}: failed tests with at least one failure item in each group (a failed test can count in several groups), ${TY}.`, ['l', 'r']);
   };
   const topItems = (mk: string, md: string, n = 5) => M(mk, md).top.slice(0, n).map(([r, v]) => [E.itemText(r), lc(E.item(r)?.d ?? ''), v] as [string, string, number]);
-  return { E, P, TY, gb, m2, m0, pc, num, pts, ratio, a, src, date, M, K, ml, table, ageTable, catTable, topItems, lc };
+  return { E, P, TY, gb, m2, m0, pc, num, pts, ratio, vsAge, a, src, date, M, K, ml, table, ageTable, catTable, topItems, lc };
 }
 export type Helpers = ReturnType<typeof helpers>;

@@ -13,7 +13,7 @@ export default definePage({
   title: 'Cars Least Likely to Fail the MOT, Ranked at Equal Age',
   description: 'Cars least likely to fail the MOT, and most likely: 148 popular models ranked against cars of the same age from DVSA tests, with two models side by side.',
   h1: 'Cars least likely to fail the MOT',
-  intro: 'Which cars are least likely to fail the MOT? Compare two models of the same registration year, ranked at equal age: the share of each that failed its first MOT test in 2023.',
+  intro: 'Which cars are least likely to fail the MOT? Compare two models of the same registration year, ranked at equal age: the share of each that failed its MOT at the first attempt in 2023.',
   resume: (h) => {
     const l = h.E.D.models.filter((m) => m.n >= 50000).map((m) => ({ m, r: h.E.ageAdjusted(m)! })).sort((a, b) => a.r - b.r);
     const b = l[0], w = l[l.length - 1];
@@ -26,17 +26,18 @@ export default definePage({
   ],
   body: (h) => {
     const l = h.E.D.models.filter((m) => m.n >= 50000).map((m) => ({ m, r: h.E.ageAdjusted(m)! })).sort((a, b) => a.r - b.r);
-    const row = (x: (typeof l)[number]) => [h.ml(x.m), x.m.n, h.pc(x.m.f / x.m.n), h.ratio(x.r)];
+    const row = (x: (typeof l)[number]) => [h.ml(x.m), x.m.n, h.pc(x.m.f / x.m.n), h.vsAge(x.r)];
     const big = l.filter((x) => x.m.n >= 300000);
     return `
 <h2>The 20 popular cars least likely to fail the MOT</h2>
-<p>Models with at least 50,000 first tests in ${h.TY}, ranked on the ratio at equal age: below 1, fewer failures than an average car of the same registration years.</p>
-${h.table(['Model', 'Tests', 'Raw rate', 'Ratio at equal age'], l.slice(0, 20).map(row), `First MOT tests of ${h.TY}, class 4. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
+<p>Models with at least 50,000 first-attempt MOT tests in ${h.TY}. Ranked against cars of the same age, not by the raw percentage: an older model that fails 31% can still beat the average for its age, and a young one that fails 10% can do worse than cars as young as itself. "Failed" is the share of tests failed at the first attempt; the last column says how much less or more often the model failed than all cars registered in the same years.</p>
+${h.table(['Model', 'Tests', 'Failed', 'Against cars the same age'], l.slice(0, 20).map(row), `First-attempt MOT tests of ${h.TY}, class 4. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
 <h2>The 20 most likely to fail</h2>
-${h.table(['Model', 'Tests', 'Raw rate', 'Ratio at equal age'], l.slice(-20).reverse().map(row), `Same threshold of 50,000 tests.`, ['l', 'r', 'r', 'r'])}
+<p>Same rule: ranked against cars of the same age, from the most failures at equal age.</p>
+${h.table(['Model', 'Tests', 'Failed', 'Against cars the same age'], l.slice(-20).reverse().map(row), `Same threshold of 50,000 tests.`, ['l', 'r', 'r', 'r'])}
 <h2>The most tested cars, side by side</h2>
 <p>The ${big.length} models with 300,000 tests or more are the cars most drivers meet. Among them, ${big[0].m.makeLabel} ${big[0].m.label} had the best ratio (${h.ratio(big[0].r)}) and ${big[big.length - 1].m.makeLabel} ${big[big.length - 1].m.label} the worst (${h.ratio(big[big.length - 1].r)}).</p>
-${h.table(['Model', 'Tests', 'Raw rate', 'Ratio at equal age'], big.map(row), `Models with 300,000 tests or more, ${h.TY}.`, ['l', 'r', 'r', 'r'])}
+${h.table(['Model', 'Tests', 'Failed', 'Against cars the same age'], big.map(row), `Models with 300,000 tests or more, ${h.TY}.`, ['l', 'r', 'r', 'r'])}
 <h2>Limits of the ranking</h2>
 <p>Premium saloons and young SUVs top the list; small vans and pick-ups take many places at the bottom, beside a few small hatchbacks. The ratio fixes the age, not the use: the data has no field for what a vehicle carries, how it is driven or how it is serviced. Some model names group several generations, and DVSA records some makes by engine variant (BMW 118 or 320, for example), which splits them. The ${h.a('method', 'method page')} explains the ratio, and each make page ranks its own models.</p>
 <p>Sources: ${h.src('dvsa_anon', 'DVSA anonymised MOT results')} (${h.TY}) and ${h.src('dvsa_stats', 'DVSA MOT testing data')}.</p>

@@ -16,7 +16,7 @@ export default modelPage({
   resume: (h) => {
     const { x, Y, F, FN, cat, T } = mctx(h, MK, MD);
     const { pc, num, ratio, pts, TY, gb } = h;
-    return `${pc(x.rate)} of the ${num(x.tests)} Kia Sportages tested in ${TY} failed their first MOT of the year, below the ${pc(gb.rate)} for all cars because most Sportages on the road are young: 2016 to 2019 are its busiest years in the file. At equal age the Sportage is almost exactly average, with a ratio of ${ratio(x.adj)}, rank ${num(x.rank)} of ${x.of}. It sits on the national line for most years, ${pc(Y(2017).r)} for 2017 cars against ${pc(Y(2017).nat)}, slightly above it for 2012 and 2013 cars, and well above it for the few older cars still tested. What sets it apart is its defects: the Sportage is the only model with a page here whose failures are led by brakes, on ${pc(x.cats[0].s, 0)} of failed tests.`;
+    return `${pc(x.rate)} of the ${num(x.tests)} Kia Sportages tested in ${TY} failed at the first attempt, below the ${pc(gb.rate)} for all cars because most Sportages on the road are young: 2016 to 2019 are its busiest years in the file. At equal age the Sportage is almost exactly average, with a ratio of ${ratio(x.adj)}, rank ${num(x.rank)} of ${x.of}. It sits on the national line for most years, ${pc(Y(2017).r)} for 2017 cars against ${pc(Y(2017).nat)}, slightly above it for 2012 and 2013 cars, and well above it for the few older cars still tested. What sets it apart is its defects: the Sportage is the only model with a page here whose failures are led by brakes, on ${pc(x.cats[0].s, 0)} of failed tests.`;
   },
   note: (h) => {
     const { x, Y, F, FN, cat, T } = mctx(h, MK, MD);

@@ -14,11 +14,11 @@ export default definePage({
   title: 'MOT Failure Rate by Postcode Area: Where Cars Fail Most',
   description: 'MOT failure rate in each postcode area of England, Scotland and Wales, from 32 million DVSA test results at the same age of car: where cars fail most and least.',
   h1: 'MOT failure rate by postcode area',
-  intro: 'Choose a postcode area and an age of car: the share of cars tested there that failed their first MOT in 2023, beside Great Britain.',
+  intro: 'Choose a postcode area and an age of car: the share of cars tested there that failed their MOT at the first attempt in 2023, beside Great Britain.',
   resume: (h) => {
     const l = Object.keys(h.E.D.areas).filter((k) => AREA_NAMES[k]).map((k) => ({ k, r: h.E.areaRate(k, '6-9')! })).filter((x) => x.r != null).sort((a, b) => a.r - b.r);
     const lo = l[0], hi = l[l.length - 1];
-    return `Where a car is tested changes its chance of failing the MOT, even at the same age. Among cars aged six to nine in the ${h.TY} DVSA results, ${h.pc(lo.r)} failed their first test in the ${areaLabel(lo.k)} postcode area, against ${h.pc(hi.r)} in ${areaLabel(hi.k)}. Outer London areas fill the low end of the table; Scottish areas, led by Dundee, Kirkcaldy and Aberdeen, fill most of the high end. The postcode area recorded by DVSA is that of the test station, which need not be where the car is kept. The file does not explain the gap, and this page does not claim to: it gives the rates, area by area, for each age band. Choose an area and an age band above to compare it with Great Britain as a whole.`;
+    return `Where a car is tested changes its chance of failing the MOT, even at the same age. Among cars aged six to nine in the ${h.TY} DVSA results, ${h.pc(lo.r)} failed at the first attempt in the ${areaLabel(lo.k)} postcode area, against ${h.pc(hi.r)} in ${areaLabel(hi.k)}. Outer London areas fill the low end of the table; Scottish areas, led by Dundee, Kirkcaldy and Aberdeen, fill most of the high end. The postcode area recorded by DVSA is that of the test station, which need not be where the car is kept. The file does not explain the gap, and this page does not claim to: it gives the rates, area by area, for each age band. Choose an area and an age band above to compare it with Great Britain as a whole.`;
   },
   faqs: (h) => [
     { q: 'Where in the UK do cars fail the MOT most?', a: 'In the 2023 DVSA results, for cars aged six to nine, the highest rates were in Scottish postcode areas, led by Dundee, Kirkcaldy and Aberdeen, and the lowest in outer London areas such as Twickenham, Southall and Bromley. Northern Ireland is not part of the data.' },
@@ -31,7 +31,7 @@ export default definePage({
     return `
 <h2>The 15 postcode areas with the lowest MOT failure rate</h2>
 <p>Areas are ranked on cars aged six to nine years, an age band large enough in every area. The second rate column, ten to fourteen years, mostly keeps the same order.</p>
-${h.table(['Postcode area', 'Tests (all ages)', '6 to 9 years', '10 to 14 years'], l.slice(0, 15).map(row), `First MOT tests of ${h.TY}, by postcode area of the test station. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
+${h.table(['Postcode area', 'Tests (all ages)', '6 to 9 years', '10 to 14 years'], l.slice(0, 15).map(row), `First-attempt MOT tests of ${h.TY}, by postcode area of the test station. DVSA anonymised MOT results.`, ['l', 'r', 'r', 'r'])}
 <h2>The 15 postcode areas with the highest MOT failure rate</h2>
 ${h.table(['Postcode area', 'Tests (all ages)', '6 to 9 years', '10 to 14 years'], l.slice(-15).reverse().map(row), `Same data, highest rates first.`, ['l', 'r', 'r', 'r'])}
 <h2>Reading the gap between areas</h2>

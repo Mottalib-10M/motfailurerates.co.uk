@@ -8,7 +8,7 @@ export const GET: APIRoute = () => {
   const lines = [
     '# MOT Failure Rates',
     '',
-    `> MOT failure rates by make, model and year of first registration for cars and light vans in Great Britain, counted from the ${D.meta.tests.toLocaleString('en-GB')} first MOT tests of ${TEST_YEAR} in the DfT/DVSA anonymised MOT test results (Open Government Licence v3.0), with the defect groups behind failures, national rates from the DVSA quarterly tables, and MOT fees, due dates, retests and exemptions from GOV.UK (last read ${LAST_UPDATED}). Published by Radif Partners, an independent publisher; not DVSA, checks no number plate, books no MOT. Northern Ireland (DVA) is not covered.`,
+    `> MOT failure rates by make, model and year of first registration for cars and light vans in Great Britain, counted from the ${D.meta.tests.toLocaleString('en-GB')} first-attempt MOT tests of ${TEST_YEAR} in the DfT/DVSA anonymised MOT test results (Open Government Licence v3.0), with the defect groups behind failures, national rates from the DVSA quarterly tables, and MOT fees, due dates, retests and exemptions from GOV.UK (last read ${LAST_UPDATED}). Published by Radif Partners, an independent publisher; not DVSA, checks no number plate, books no MOT. Northern Ireland (DVA) is not covered.`,
     '',
     '## Tools and guides',
     `- [MOT failure rate checker](${SITE_URL}${route('home', 'en')}): failure rate of a make, model and year against all cars of the same age.`,

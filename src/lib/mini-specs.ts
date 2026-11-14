@@ -47,7 +47,7 @@ const SPECS: Record<string, (lang: string) => MiniSpec> = {
     exemple: (v) => `Example for a car first registered in ${v.year}`,
     run: (v) => {
       const p = NAT[String(v.year)], r = rt(p), r3 = rt(NAT[String(TY - 3)]);
-      return { head: [`Cars first registered in ${v.year}: failed the first test`, pc(r)], rows: [['Tests in ' + TY, n0(p?.[0] ?? 0)], ['Initial failures', n0(p?.[1] ?? 0)], ['Cars at their first MOT (3 years)', pc(r3)], ['Times the 3-year rate', r && r3 ? `${formatNumber(r / r3, 1)} ×` : 'n/a']], note: `DVSA anonymised results, class 4 tests in ${TY}.` };
+      return { head: [`Cars first registered in ${v.year}: failed at the first attempt`, pc(r)], rows: [['Tests in ' + TY, n0(p?.[0] ?? 0)], ['Initial failures', n0(p?.[1] ?? 0)], ['Cars at their first MOT (3 years)', pc(r3)], ['Times the 3-year rate', r && r3 ? `${formatNumber(r / r3, 1)} ×` : 'n/a']], note: `DVSA anonymised results, class 4 tests in ${TY}.` };
     },
   }),
   fuel: () => ({
@@ -57,7 +57,7 @@ const SPECS: Record<string, (lang: string) => MiniSpec> = {
     run: (v) => {
       const k = FUEL_KEYS[v.fuel], p = FUEL[k]?.[String(v.year)];
       const rows: Array<[string, string]> = FUEL_KEYS.filter((x) => x !== k).map((x) => { const q = FUEL[x]?.[String(v.year)]; return [`${FUEL_LABEL[x]}, same year`, q && q[0] >= 500 ? `${pc(rt(q))} of ${n0(q[0])}` : 'too few tests']; });
-      return { head: [`${FUEL_LABEL[k]} cars from ${v.year}: failed the first test`, p && p[0] >= 500 ? pc(rt(p)) : 'too few tests'], rows: [['Tests counted', n0(p?.[0] ?? 0)], ...rows], note: 'Fuel as recorded at the test. Under 500 tests a rate is not shown.' };
+      return { head: [`${FUEL_LABEL[k]} cars from ${v.year}: failed at the first attempt`, p && p[0] >= 500 ? pc(rt(p)) : 'too few tests'], rows: [['Tests counted', n0(p?.[0] ?? 0)], ...rows], note: 'Fuel as recorded at the test. Under 500 tests a rate is not shown.' };
     },
   }),
   mileage: () => ({
@@ -124,7 +124,7 @@ const SPECS: Record<string, (lang: string) => MiniSpec> = {
   due: () => ({
     title: 'When is my MOT due?', cta: 'Book with a reminder from GOV.UK',
     inputs: [
-      { id: 'mode', label: 'I know', def: 1, options: [{ value: '0', label: 'The date the car was first registered (first MOT)' }, { value: '1', label: 'The expiry date of the current MOT' }] },
+      { id: 'mode', label: 'I know', def: 1, options: [{ value: '0', label: 'The date the car was first registered (first MOT due at three years)' }, { value: '1', label: 'The expiry date of the current MOT' }] },
       { id: 'd', label: 'Day', def: 15, max: 31 },
       { id: 'm', label: 'Month', def: 5, options: monthOptions },
       { id: 'y', label: 'Year', def: 2027, max: 2035 },
