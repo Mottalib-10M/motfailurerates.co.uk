@@ -76,12 +76,11 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
   const rThen = pThen && pThen[0] >= MIN ? rt(pThen) : null;
   const natThen = rt(L.national[String(yThen)]);
   const older = ageNow !== age;
-  /** Main answer: the rate at the age the car is now (the model's own when it has 100 tests, else all cars). */
-  const main = older ? (rThen ?? natThen) : r;
-  const mainNat = older ? natThen : nat;
-  const pb = b.row[2][String(older ? yThen : a.y)];
+  // Main answer: the chosen year's own rate (editor's choice, tour 5); the age now is a second line, without a verdict.
+  const pb = b.row[2][String(a.y)];
   const rb = pb && pb[0] >= MIN ? rt(pb) : null;
-  const ra = older ? rThen : r;
+  const pbThen = b.row[2][String(yThen)];
+  const rbThen = pbThen && pbThen[0] >= MIN ? rt(pbThen) : null;
   const page = pages[`${a.row[0]}|${a.row[1]}`];
   const href = page && norm(page) !== norm(currentPath) ? page : undefined;
   const opts = (rows: string[]) => rows.map((v) => ({ value: v, label: v }));
@@ -107,28 +106,20 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
           )}
         </form>
         <div data-resultat aria-live="polite" className="border-l-4 border-accent-500 bg-accent-50 p-4">
-          {older ? (
-            <>
-              <p className="text-sm font-medium text-navy-700">{nm} registered in {a.y}: {ageNow} years old now</p>
-              <p data-principal className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(main)}</p>
-              <p className="mt-1 text-sm text-navy-800">{rThen != null
-                ? <>of {a.md} cars aged {ageNow} (registered in {yThen}) failed the MOT at the first attempt in {TY}. {verdictWords[verdictOf(rThen, natThen!)]}: {against(rThen, natThen!)}.</>
-                : <>of all cars aged {ageNow} (registered in {yThen}) failed the MOT at the first attempt in {TY}. Too few {nm} tests at that age to give its own figure.</>}</p>
-              <div className="mt-3 border-t border-accent-200 pt-3">
-                <p className="text-sm font-medium text-navy-700">Your own year, {a.y}: at {age}, the age it was in {TY}</p>
-                <p className="tabular-nums text-2xl font-bold text-navy-900">{pc(r)}</p>
-                <p className="mt-1 text-sm text-navy-800">{r != null && nat != null ? <>{verdictWords[verdictOf(r, nat)]}: {against(r, nat)}.</> : null}</p>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-sm font-medium text-navy-700">{nm} registered in {a.y}: failed the MOT at the first attempt in {TY}</p>
-              <p data-principal className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(r)}</p>
-              <p className="mt-1 text-sm text-navy-800">{p ? <>{formatNumber(p[1], 0)} of {formatNumber(p[0], 0)} tests. </> : null}{r != null && nat != null ? <>{verdictWords[verdictOf(r, nat)]}: {against(r, nat)}.</> : null}</p>
-            </>
+          <p className="text-sm font-medium text-navy-700">{nm} registered in {a.y}: failed the MOT at the first attempt in {TY}{older ? `, when it was ${age} years old` : ''}</p>
+          <p data-principal className="tabular-nums mt-1 text-4xl font-bold text-navy-900">{pc(r)}</p>
+          <p data-verdict className="mt-1 text-sm text-navy-800">{p ? <>{formatNumber(p[1], 0)} of {formatNumber(p[0], 0)} tests. </> : null}{r != null && nat != null ? <><strong>{verdictWords[verdictOf(r, nat)]}</strong>: {against(r, nat)}.</> : null}</p>
+          {older && (
+            <div data-age-actuel className="mt-3 border-t border-accent-200 pt-3 text-sm text-navy-800">
+              <p className="font-medium text-navy-700">At {ageNow}, the age it is now</p>
+              <p className="mt-1">Cars fail more as they get older, so your next MOT is likely to be harder than in {TY}. {TY} is the latest year with figures by model; {rThen != null
+                ? <>the closest guide is {a.md} cars that were already {ageNow} then (registered in {yThen}): <span className="tabular-nums text-lg font-bold text-navy-900">{pc(rThen)}</span> of them failed.</>
+                : <>there are too few {nm} tests at {ageNow} to give its own figure; among all cars that were {ageNow} then (registered in {yThen}), <span className="tabular-nums text-lg font-bold text-navy-900">{pc(natThen)}</span> failed.</>}</p>
+            </div>
           )}
-          {compare && <p className="mt-3 border-t border-accent-200 pt-3 text-sm text-navy-800"><strong>{nmb}, registered {older ? yThen : a.y}:</strong> {rb == null ? `fewer than ${MIN} tests at that age, no figure` : <><span className="tabular-nums text-lg font-bold text-navy-900">{pc(rb)}</span> of {formatNumber(pb![0], 0)} tests failed at the first attempt</>}.</p>}
-          {compare && ra != null && rb != null && <p className="mt-1 text-sm font-semibold text-navy-900">{verdictOf(ra, rb) === 'same' ? `The ${a.md} and the ${b.md} failed about as often as each other: ${pc(ra)} and ${pc(rb)}.` : `The ${a.md} failed ${verdictOf(ra, rb) === 'better' ? 'less' : 'more'} often than the ${b.md}: ${pc(ra)} against ${pc(rb)}.`}</p>}
+          {compare && <p className="mt-3 border-t border-accent-200 pt-3 text-sm text-navy-800"><strong>{nmb}, registered {a.y}:</strong> {rb == null ? `fewer than ${MIN} tests in ${TY}, no figure` : <><span className="tabular-nums text-lg font-bold text-navy-900">{pc(rb)}</span> of {formatNumber(pb![0], 0)} tests failed at the first attempt</>}.</p>}
+          {compare && r != null && rb != null && <p className="mt-1 text-sm font-semibold text-navy-900">{verdictOf(r, rb) === 'same' ? `Registered in ${a.y}, the ${a.md} and the ${b.md} failed about as often as each other: ${pc(r)} and ${pc(rb)}.` : `Registered in ${a.y}, the ${a.md} failed ${verdictOf(r, rb) === 'better' ? 'less' : 'more'} often than the ${b.md}: ${pc(r)} against ${pc(rb)}.`}</p>}
+          {compare && older && rThen != null && rbThen != null && <p className="mt-1 text-sm text-navy-800">At {ageNow}, the age they are now (cars registered in {yThen}): {a.md} {pc(rThen)}, {b.md} {pc(rbThen)}.</p>}
           <p className="mt-2 text-sm font-semibold text-navy-900">A rate describes these cars as a group: your own checks before the test change your odds.</p>
           {checksHref && <a href={checksHref} className="mt-2 inline-block rounded-lg bg-accent-700 px-3 py-2 text-sm font-semibold text-white hover:bg-accent-800">7 free checks before your MOT →</a>}
           {a.row[3].length > 0 && <p className="mt-2 text-sm text-navy-800">Most frequent reasons when {an(a.md)} failed: {a.row[3].map(([c, s]) => `${lower(L.cats[String(c)] ?? '')} ${pc(s)}`).join(', ')} of failed tests (one test can have several).</p>}
@@ -139,7 +130,7 @@ export default function MotChecker({ make = 'Ford', model = 'Focus', year = 2015
       </div>
       <div className="mt-4 overflow-x-auto">
         <table className="journal w-full text-sm">
-          <caption className="mb-2 text-left text-sm text-navy-600">{nm}, share of {TY} MOT tests failed at the first attempt, by year of first registration, against all cars registered the same year. In bold: your year, and {yThen}, cars as old in {TY} as yours is now</caption>
+          <caption className="mb-2 text-left text-sm text-navy-600">{nm}, share of {TY} MOT tests failed at the first attempt, by year of first registration, against all cars registered the same year. In bold: your year{older ? <>, and {yThen} (cars that were {ageNow} in {TY}, the age yours is now)</> : null}</caption>
           <thead><tr>
             <th scope="col" className="px-2 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-700">Registered</th>
             <th scope="col" className="px-2 py-2 text-right text-xs font-semibold uppercase tracking-wide text-navy-700">Tests</th>

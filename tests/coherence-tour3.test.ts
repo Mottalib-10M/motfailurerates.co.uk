@@ -3,8 +3,8 @@
  * 1. Une seule unité pour comparer un modèle aux voitures du même âge : deux pourcentages de tests ratés
  *    (« 21.4% failed, against 24.5% for all cars the same age »). Plus de ratio, de « percentage points »,
  *    de « 12% more failures » ni de rang « 30 of 148 », qui se contredisaient d'un écran à l'autre.
- * 2. Le gros chiffre du calculateur est le taux de l'âge que la voiture a AUJOURD'HUI (les voitures de cet âge
- *    dans les résultats DVSA), pas celui de son âge l'année des données.
+ * 2. (tour 5, choix de l'éditeur) Le gros chiffre est le taux de l'année choisie ; l'âge actuel vient en seconde
+ *    ligne, expliqué, sans second verdict.
  * 3. Coquilles relevées : « a A3 », « Mini Mini », « I3 ».
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -30,7 +30,7 @@ const BANNED: Array<[string, RegExp]> = [
   ['« National rate since »', /National rate since/i],
 ];
 
-describe('une seule unité de comparaison, chiffre principal à l’âge actuel', () => {
+describe('une seule unité de comparaison, chiffre principal de l’année choisie', () => {
   it('a/an devant les noms de modèles', () => {
     expect(an('A3')).toBe('an A3');
     expect(an('X5')).toBe('an X5');
@@ -51,7 +51,7 @@ describe('une seule unité de comparaison, chiffre principal à l’âge actuel'
     expect(bad).toEqual([]);
   });
 
-  it('le gros chiffre de l’accueil est le taux de l’âge actuel de la voiture', () => {
+  it('le gros chiffre de l’accueil est le taux de l’année choisie, avec un seul verdict (tour 5)', () => {
     const f = join(DIST, 'en', 'index.html');
     if (!existsSync(f)) return;
     const html = readFileSync(f, 'utf8');
@@ -59,12 +59,16 @@ describe('une seule unité de comparaison, chiffre principal à l’âge actuel'
     expect(m).not.toBeNull();
     const L = LITE as unknown as { testYear: number; models: Array<[string, string, Record<string, [number, number]>]> };
     const focus = L.models.find((r) => r[0] === 'Ford' && r[1] === 'Focus')!;
+    const pct = (p: [number, number]) => new Intl.NumberFormat('en-GB', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(p[1] / p[0]);
+    expect(m![1].replace(/\s/g, '')).toBe(pct(focus[2]['2015']));
+    const t = text(html).replace(/\s+([:,.])/g, '$1');
+    // l'âge actuel reste en seconde ligne, expliqué, avec le taux des voitures de cet âge en 2023
     const ageNow = PARAMS.year - 2015;
-    const p = focus[2][String(L.testYear - ageNow)];
-    const want = new Intl.NumberFormat('en-GB', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(p[1] / p[0]);
-    expect(m![1].replace(/\s/g, '')).toBe(want);
-    // et l'âge de l'année des données reste affiché, plus petit, nommé comme tel
-    expect(text(html).replace(/\s+([:,.])/g, '$1')).toMatch(new RegExp(`Your own year, 2015: at ${L.testYear - 2015}, the age it was in ${L.testYear}`));
+    expect(t).toMatch(new RegExp(`At ${ageNow}, the age it is now`));
+    expect(t).toContain(pct(focus[2][String(L.testYear - ageNow)]));
+    // un seul verdict dans le bloc résultat
+    const bloc = text(html.slice(html.indexOf('data-resultat'), html.indexOf('</table>')));
+    expect((bloc.match(/(Better|Worse|About average) than average|About average for its age/g) ?? []).length).toBe(1);
   });
 
   it('« better / worse » suit toujours les deux pourcentages affichés', () => {
