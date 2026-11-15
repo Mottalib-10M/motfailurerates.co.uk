@@ -3,8 +3,8 @@
  * 1. Une seule unité pour comparer un modèle aux voitures du même âge : deux pourcentages de tests ratés
  *    (« 21.4% failed, against 24.5% for all cars the same age »). Plus de ratio, de « percentage points »,
  *    de « 12% more failures » ni de rang « 30 of 148 », qui se contredisaient d'un écran à l'autre.
- * 2. (tour 5, choix de l'éditeur) Le gros chiffre est le taux de l'année choisie ; l'âge actuel vient en seconde
- *    ligne, expliqué, sans second verdict.
+ * 2. (tour 6, choix de l'éditeur) Deux chiffres côte à côte, même taille : « Your next MOT (cars aged 11 now) »
+ *    (voitures de cet âge en 2023) et « Your car's year (at 8, in 2023) » ; un seul verdict, sur le prochain MOT.
  * 3. Coquilles relevées : « a A3 », « Mini Mini », « I3 ».
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -51,24 +51,31 @@ describe('une seule unité de comparaison, chiffre principal de l’année chois
     expect(bad).toEqual([]);
   });
 
-  it('le gros chiffre de l’accueil est le taux de l’année choisie, avec un seul verdict (tour 5)', () => {
+  it('deux chiffres côte à côte, même taille, verdict sur le prochain MOT (tour 6)', () => {
     const f = join(DIST, 'en', 'index.html');
     if (!existsSync(f)) return;
     const html = readFileSync(f, 'utf8');
-    const m = html.match(/data-principal[^>]*>([^<]+)</);
-    expect(m).not.toBeNull();
     const L = LITE as unknown as { testYear: number; models: Array<[string, string, Record<string, [number, number]>]> };
     const focus = L.models.find((r) => r[0] === 'Ford' && r[1] === 'Focus')!;
     const pct = (p: [number, number]) => new Intl.NumberFormat('en-GB', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(p[1] / p[0]);
-    expect(m![1].replace(/\s/g, '')).toBe(pct(focus[2]['2015']));
-    const t = text(html).replace(/\s+([:,.])/g, '$1');
-    // l'âge actuel reste en seconde ligne, expliqué, avec le taux des voitures de cet âge en 2023
     const ageNow = PARAMS.year - 2015;
-    expect(t).toMatch(new RegExp(`At ${ageNow}, the age it is now`));
-    expect(t).toContain(pct(focus[2][String(L.testYear - ageNow)]));
-    // un seul verdict dans le bloc résultat
-    const bloc = text(html.slice(html.indexOf('data-resultat'), html.indexOf('</table>')));
-    expect((bloc.match(/(Better|Worse|About average) than average|About average for its age/g) ?? []).length).toBe(1);
+    const age = L.testYear - 2015;
+    const next = pct(focus[2][String(L.testYear - ageNow)]);
+    const own = pct(focus[2]['2015']);
+    const m = html.match(/data-principal[^>]*>([^<]+)</);
+    expect(m![1].replace(/\s/g, '')).toBe(next);
+    const bloc = html.slice(html.indexOf('data-resultat'), html.indexOf('</table>'));
+    const t = text(bloc).replace(/\s+([:,.)])/g, '$1').replace(/\(\s+/g, '(');
+    expect(t).toMatch(new RegExp(`Your next MOT \\(cars aged ${ageNow} now\\) ${next.replace('.', '\\.')}`));
+    expect(t).toMatch(new RegExp(`Your car\\S*s year \\(at ${age}, in ${L.testYear}\\) ${own.replace('.', '\\.')}`));
+    // même taille pour les deux chiffres
+    const sizes = [...bloc.matchAll(/class="([^"]*text-3xl[^"]*)"/g)];
+    expect(sizes.length).toBeGreaterThanOrEqual(2);
+    expect(bloc).not.toMatch(/text-4xl/);
+    // un seul verdict, sur l'âge actuel
+    expect((t.match(/(Better|Worse|About average) than average|About average for its age/g) ?? []).length).toBe(1);
+    expect(t).toMatch(new RegExp(`for its age: of Focus cars aged ${ageNow}, ${next.replace('.', '\\.')} failed`));
+    expect(t).toContain('Why two figures');
   });
 
   it('« better / worse » suit toujours les deux pourcentages affichés', () => {
