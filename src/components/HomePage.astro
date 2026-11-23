@@ -31,6 +31,7 @@ const faqs = [
   { q: 'Do I need to give my number plate?', a: 'No. The checker works from the make, model and year you choose, and nothing leaves your browser. The MOT history of a specific car, from its number plate, is on GOV.UK only. This site never asks for one, and its rates describe cars like yours rather than your own car.' },
   { q: 'How recent are the failure rates?', a: `The rates by model use the latest anonymised file DVSA has published, covering every test in ${TY} (published on ${displayDate(E.D.meta.published, 'en-GB')}). National rates by quarter come from the DVSA tables updated on ${displayDate(P.national.tableUpdated, 'en-GB')}. When this page was checked, the data.gov.uk dataset offered no test-by-test file later than ${TY}; the rates will move to a newer year once DVSA publishes one.` },
   { q: 'Why is my model compared with cars of the same age?', a: 'Because age moves the failure rate more than anything else. A model sold mostly fifteen years ago will fail more than a new one whatever its quality. Comparing each year of a model with all cars of that year shows whether the model itself does better or worse.' },
+  { q: 'What will the MOT figures be in 2027?', a: `No change to the MOT fee cap has been announced for 2027: it stays at ${m2(P.fees.car)} for a car, with no VAT, until the government changes it on GOV.UK. Under the rolling 40-year rule, cars first registered in 1987 stop needing an MOT as each reaches its 40th year. DVSA last updated its quarterly tables on September 10, 2026; the next quarter is due around December 2026. It gives no date for the next anonymised test file after ${TY}; this site switches to it as soon as it is published.` },
   { q: 'Is this an official DVSA site?', a: 'No. MOT Failure Rates is an independent site published by Radif Partners. It counts the results DVSA publishes under the Open Government Licence. It books no MOT, sells no history check and asks for no email or number plate. Fees, due dates and retest rules come from GOV.UK pages, linked at the foot of each page.' },
 ];
 const jsonLd = [webApplicationSchema({ name: 'MOT failure rate checker', description: 'Share of cars of a make, model and year that failed their MOT at the first attempt, from the DVSA anonymised results.', path: route('home', lang), lang }), websiteSchema(lang), organizationSchema(lang), faqSchema(faqs, lang)];
@@ -86,6 +87,19 @@ const quarters = [[P.national.y2324Label, P.national.y2324InitialFailRate], ['Ap
 
     <h2>Cost, due date and retests</h2>
     <p>The MOT fee for a car is capped at {m2(P.fees.car)}, with no VAT, and many garages charge less (<Fragment set:html={h.src('gov_fees', 'GOV.UK fees')} />). The first MOT is due by the third anniversary of registration, then every year, and you can be tested up to a month (minus a day) early without losing the renewal date (<Fragment set:html={h.src('gov_when', 'GOV.UK, when to get an MOT')} />). Driving without a valid MOT can cost up to {m0(P.rules.fineNoMot)}. After a fail, the retest is free if the car is repaired at the test centre and retested within {num(P.rules.partialRetestDays)} working days, or brought back by the end of the next working day for listed items (<Fragment set:html={h.src('gov_retests', 'GOV.UK retests')} />). The <Fragment set:html={h.a('mot-cost', 'cost calculator')} />, the <Fragment set:html={h.a('mot-due-date', 'due date calculator')} /> and the <Fragment set:html={h.a('failed-mot-what-next', 'page on failing')} /> go into each rule. Cars built or first registered more than {num(P.rules.historicYears)} years ago need no MOT (<Fragment set:html={h.a('mot-exemption-40-year-old-cars', 'exemption page')} />).</p>
+
+    <h2>MOT failure rates and fees in 2027</h2>
+    <p>Already official for 2027:</p>
+    <ul>
+    <li>The MOT fee cap for a car is {m2(P.fees.car)}, with no VAT (<Fragment set:html={h.src('gov_fees', 'GOV.UK fees')} />); no change has been announced for 2027.</li>
+    <li>The rule for the first MOT (third anniversary of registration) and the rolling {num(P.rules.historicYears)}-year exemption stay the same: cars first registered in 1987 qualify one by one as they turn {num(P.rules.historicYears)} during 2027 (<Fragment set:html={h.a('mot-exemption-40-year-old-cars', 'exemption page')} />).</li>
+    </ul>
+    <p>Not yet published:</p>
+    <ul>
+    <li>DVSA's quarterly MOT tables: the page is updated every three months, last on September 10, 2026 with April to June 2026, so July to September 2026 is expected around December 2026, and the year April 2026 to March 2027 after it closes (<Fragment set:html={h.src('dvsa_stats', 'DVSA MOT testing data')} />).</li>
+    <li>The anonymised test-by-test file after {TY}, on which the rates by make and model rest: DVSA gives no date (<Fragment set:html={h.src('dvsa_anon', 'data.gov.uk')} />).</li>
+    </ul>
+    <p>The checker will switch to the next DVSA file as soon as it is published, and the cost calculator to any new fee cap the day it takes effect.</p>
 
     <h2 id="seven-checks">Before the test: seven checks that cost nothing</h2>
     <ol>
